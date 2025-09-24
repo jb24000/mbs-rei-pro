@@ -4,19 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MBPS REI Calculator Suite — PRO</title>
+
+  <!-- PWA (project subpath aware) -->
   <meta name="theme-color" content="#000000" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="MBPS REI PRO" />
-  <link rel="manifest" href="/manifest.json" />
-  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <link rel="manifest" href="/mbs-rei-pro/manifest.json" />
+  <link rel="apple-touch-icon" href="/mbs-rei-pro/icon-192.png" />
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
     *{box-sizing:border-box}
     body{font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(135deg,#0c0c0c,#1a1a1a 50%,#0f0f0f);min-height:100vh;color:#fff;margin:0;padding:14px}
-    .container{max-width:520px;margin:0 auto;border-radius:24px;background:linear-gradient(145deg,#1e1e1e,#0a0a0a);box-shadow:0 25px 50px -12px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px rgba(255,255,255,.05);overflow:hidden}
+    .container{max-width:680px;margin:0 auto;border-radius:24px;background:linear-gradient(145deg,#1e1e1e,#0a0a0a);box-shadow:0 25px 50px -12px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px rgba(255,255,255,.05);overflow:hidden}
     .top{padding:18px 18px 8px;border-bottom:1px solid rgba(255,255,255,.08);position:relative}
     .title{font-size:18px;font-weight:800;letter-spacing:-.02em;text-align:center}
     .subtitle{font-size:12px;color:#8a8a8a;text-align:center;margin:6px 0 10px}
@@ -28,17 +34,22 @@
     .display{margin:10px 14px 14px;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.4);border-radius:14px;padding:14px}
     .kpi{font-size:30px;font-weight:900;color:#00ff88;text-shadow:0 0 20px rgba(0,255,136,.25)}
     .freq{font-size:11px;color:#707070;letter-spacing:.5px}
-    .toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:0 14px 12px}
+
+    .toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center;justify-content:space-between;padding:0 14px 12px}
+    .toolbar .right{display:flex;gap:8px;justify-content:flex-end}
     .select,.input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;color:#fff;font-size:14px}
     .select{appearance:none;background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3e%3cpath d='M6 8l4 4 4-4' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");background-position:right 10px center;background-repeat:no-repeat;background-size:16px;padding-right:34px}
     .btn{background:linear-gradient(135deg,#00ff88,#00cc6a);color:#000;border:none;border-radius:10px;padding:11px 14px;font-weight:800;letter-spacing:.3px;cursor:pointer;box-shadow:0 6px 18px rgba(0,255,136,.28)}
-    .chips{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:0 14px 10px}
+
+    .chips{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:0 14px 10px}
     .chip{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#ddd;padding:8px 8px;font-size:11px;border-radius:9px;text-align:center;cursor:pointer;user-select:none}
     .chip.active{border-color:#00ff88;background:rgba(0,255,136,.08);color:#00ff88;box-shadow:inset 0 0 0 3px rgba(0,255,136,.1)}
+
     .panel{padding:14px}
     .grid{display:grid;gap:12px}
     .label{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#cfcfcf;margin-bottom:6px}
     .row{display:flex;gap:8px}
+
     .calculate{margin:10px 14px 0}
     .details{display:none;padding:12px 14px;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.18)}
     .dgrid{display:grid;gap:8px}
@@ -46,12 +57,16 @@
     .drow:last-child{border-bottom:none}
     .dlabel{font-size:12px;color:#a9a9a9}
     .dval{font-size:13px;font-family:'Inter',monospace}
+
     .foot{padding:10px 14px;border-top:1px solid rgba(255,255,255,.06);display:flex;gap:8px;align-items:center;justify-content:space-between;background:rgba(255,255,255,.02)}
     .tiny{font-size:10px;color:#8a8a8a}
-    .two{grid-template-columns:repeat(2,1fr)} .three{grid-template-columns:repeat(3,1fr)}
+    .two{grid-template-columns:repeat(2,1fr)} .three{grid-template-columns:repeat(3,1fr)} .four{grid-template-columns:repeat(4,1fr)}
+
+    /* Install prompt bar */
     .install {position: fixed; bottom: 18px; right: 18px; display:none; gap:10px; align-items:center; background:#101414; border:1px solid rgba(255,255,255,.12); padding:10px 12px; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.35)}
     .install .btn {padding:8px 12px}
-    @media (max-width:520px){body{padding:10px}.chips{grid-template-columns:repeat(2,1fr)}}
+
+    @media (max-width:680px){body{padding:10px}.chips{grid-template-columns:repeat(3,1fr)}.toolbar{grid-template-columns:1fr}.toolbar .right{justify-content:stretch}}
   </style>
 </head>
 <body>
@@ -59,13 +74,13 @@
     <div class="top">
       <div class="status"><span class="dot" id="dot"></span><span id="status">Online</span></div>
       <div class="title">MBPS REI Calculator Suite — PRO</div>
-      <div class="subtitle">Wholesale Exits • Flip Soft Costs • Stabilized Multifamily • Land Risk • DCR IO/Balloon</div>
+      <div class="subtitle">Wholesale • Flip/Wholetail • Apts (2nd lien + Refi) • Land (Terms) • DCR • Subject-To</div>
       <div class="badgebar">
-        <div class="badge">MBPS</div>
         <div class="badge">Installable</div>
         <div class="badge">Offline-Ready</div>
-        <div class="badge">Local Presets</div>
-        <div class="badge">Sensitivity</div>
+        <div class="badge">Market Presets</div>
+        <div class="badge">Seller Carry</div>
+        <div class="badge">Refi Model</div>
       </div>
       <div class="display">
         <div class="kpi" id="kpi">$0</div>
@@ -74,15 +89,28 @@
     </div>
 
     <div class="toolbar">
-      <select class="select" id="calcPicker">
-        <option value="wholesale">Wholesaling</option>
-        <option value="flip">Fix & Flip</option>
-        <option value="apts">Apartments</option>
-        <option value="land">Land</option>
-        <option value="dcr">DCR (Commercial)</option>
-      </select>
-      <button class="btn" id="savePreset">Save</button>
-      <button class="btn" id="loadPreset">Load</button>
+      <div class="left row">
+        <select class="select" id="calcPicker">
+          <option value="wholesale">Wholesaling</option>
+          <option value="flip">Fix & Flip</option>
+          <option value="apts">Apartments</option>
+          <option value="land">Land</option>
+          <option value="dcr">DCR (Commercial)</option>
+          <option value="subto">Subject-To</option>
+        </select>
+      </div>
+      <div class="right">
+        <select class="select" id="marketPreset">
+          <option value="custom">Market Preset: Custom</option>
+          <option value="atl">ATL Metro</option>
+          <option value="dal">DFW</option>
+          <option value="phx">Phoenix</option>
+          <option value="tpa">Tampa</option>
+          <option value="clt">Charlotte</option>
+        </select>
+        <button class="btn" id="savePreset">Save</button>
+        <button class="btn" id="loadPreset">Load</button>
+      </div>
     </div>
 
     <div class="chips" id="chips">
@@ -91,6 +119,7 @@
       <div class="chip" data-value="apts">Apts</div>
       <div class="chip" data-value="land">Land</div>
       <div class="chip" data-value="dcr">DCR</div>
+      <div class="chip" data-value="subto">Sub-To</div>
     </div>
 
     <div class="panel"><div class="grid" id="inputs"></div></div>
@@ -109,6 +138,7 @@
     </div>
   </div>
 
+  <!-- Install Prompt UI -->
   <div class="install" id="installBar">
     <span class="tiny">Install MBPS REI PRO?</span>
     <button class="btn" id="installBtn">Install</button>
@@ -116,11 +146,11 @@
   </div>
 
   <script>
-    // Online/Offline
+    /* ---------- Online/Offline indicator ---------- */
     function updateStatus(){ const d=document.getElementById('dot'), s=document.getElementById('status'); if(navigator.onLine){d.classList.remove('offline'); s.textContent='Online'} else {d.classList.add('offline'); s.textContent='Offline'} }
     window.addEventListener('online',updateStatus); window.addEventListener('offline',updateStatus); updateStatus();
 
-    // Helpers
+    /* ---------- Helpers ---------- */
     const $ = (q)=>document.querySelector(q); const $$=(q)=>Array.from(document.querySelectorAll(q));
     const money=(n,d=0)=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:d,maximumFractionDigits:d}).format(isFinite(n)?n:0);
     const pct=(n)=>isFinite(n)?(n*100).toFixed(2)+'%':'—';
@@ -129,8 +159,31 @@
     function field(id,label,opts={}){ const {type='number',step='1',placeholder='',value=''}=opts; return `<div><div class="label">${label}</div><input class="input" type="${type}" step="${step}" id="${id}" placeholder="${placeholder}" value="${value}"></div>`}
     function selectField(id,label,options,init){ return `<div><div class="label">${label}</div><select id="${id}" class="select">${options.map(o=>`<option value="${o.value}" ${o.value==init?'selected':''}>${o.label}</option>`).join('')}</select></div>`}
     function boolField(id,label,init=false){ return `<div><label class="label" style="display:flex;align-items:center;gap:8px"><input id="${id}" type="checkbox" ${init?'checked':''}/> ${label}</label></div>`}
+    const clamp=(x,min,max)=>Math.max(min,Math.min(max,x));
 
-    // Calculators
+    /* ---------- Market Presets (quick, adjustable) ---------- */
+    // These set typical ranges for taxes/insurance/rates; we only apply to visible inputs if present.
+    const MARKET = {
+      custom: {},
+      atl: { rate: 0.0725, taxesInsYr: 4200, hoaYr: 300, vacancy: 0.06, marketCap: 0.062 },
+      dal: { rate: 0.072, taxesInsYr: 5200, hoaYr: 0, vacancy: 0.07, marketCap: 0.058 },
+      phx: { rate: 0.07, taxesInsYr: 3600, hoaYr: 0, vacancy: 0.08, marketCap: 0.058 },
+      tpa: { rate: 0.072, taxesInsYr: 5200, hoaYr: 0, vacancy: 0.07, marketCap: 0.059 },
+      clt: { rate: 0.071, taxesInsYr: 3800, hoaYr: 200, vacancy: 0.06, marketCap: 0.061 }
+    };
+    function applyMarketPreset(key){
+      const p = MARKET[key]||{};
+      const map = { rate:['rate','rate1','scRate','refiRate','refiRateA'], taxesInsYr:['taxesIns'], hoaYr:['hoa'], vacancy:['vacancy'], marketCap:['marketCap'] };
+      Object.entries(map).forEach(([k,ids])=>{
+        if(p[k]==null) return;
+        ids.forEach(id=>{
+          const el = document.getElementById(id);
+          if(el){ el.value = p[k]; }
+        });
+      });
+    }
+
+    /* ---------- Calculators ---------- */
     const calculators = {
       wholesale: {
         name:'WHOLESALE',
@@ -142,88 +195,208 @@
           ${field('assignment','Assignment Fee',{value:10000,step:'500'})}
           ${field('misc','Misc/Closing Cushions',{value:0,step:'500'})}
           ${selectField('buyerRisk','Buyer Profile (Risk)',[{value:'conservative',label:'Conservative (−5%)'},{value:'standard',label:'Standard'},{value:'aggressive',label:'Aggressive (+5%)'}],'standard')}
+          ${boolField('taxes','Include Transfer/Recording (est. 0.5% ARV)',false)}
         `,
         compute:(v,sens=0)=>{
           const adj=v.discount + (v.buyerRisk==='aggressive'?0.05:(v.buyerRisk==='conservative'?-0.05:0));
           const arvAdj=v.arv*(1+sens);
           let exitCost=0; if(v.exit==='double') exitCost=Math.max(1500,0.01*arvAdj); if(v.exit==='novation') exitCost=0.02*arvAdj;
-          const buyerPrice=arvAdj*adj - v.repairs - v.misc - exitCost; const mao=buyerPrice - v.assignment;
-          return {kpi:money(mao),label:'MAO (Offer to Seller)',details:[['ARV (Adj)',money(arvAdj)],['Exit Cost ('+v.exit+')',money(exitCost)],['Investor Buyer Price (Target)',money(buyerPrice)],['Your Assignment Profit',money(v.assignment)],['MAO',money(mao)]]};
+          const fees = v.taxes ? 0.005*arvAdj : 0;
+          const buyerPrice=arvAdj*adj - v.repairs - v.misc - exitCost - fees; const mao=buyerPrice - v.assignment;
+          return {kpi:money(mao),label:'MAO (Offer to Seller)',details:[
+            ['ARV (Adj)',money(arvAdj)],['Exit Cost ('+v.exit+')',money(exitCost)],['Govt Fees (est.)',money(fees)],
+            ['Investor Buyer Price (Target)',money(buyerPrice)],['Your Assignment Profit',money(v.assignment)],['MAO',money(mao)]
+          ]};
         }
       },
+
       flip: {
         name:'FIX & FLIP',
         inputs: () => `
-          ${field('arv','ARV',{value:350000,step:'1000'})}
-          ${field('purchase','Purchase Price',{value:190000,step:'1000'})}
-          ${field('repairs','Repairs',{value:50000,step:'1000'})}
-          ${field('rehabCont','Rehab Contingency (×)',{value:0.10,step:'0.01'})}
-          ${field('sellRate','Selling Costs (× ARV)',{value:0.08,step:'0.005'})}
-          ${field('concessions','Buyer Concessions (× ARV)',{value:0.02,step:'0.005'})}
-          ${field('permits','Permits/Plans',{value:2500,step:'100'})}
-          ${field('staging','Staging',{value:1500,step:'100'})}
-          ${field('hMonths','Holding Months',{value:6,step:'1'})}
-          ${field('hMonthly','Holding Monthly',{value:1200,step:'50'})}
-          ${field('ltv','LTV',{value:0.90,step:'0.01'})}
-          ${field('rate','Interest Rate (annual)',{value:0.12,step:'0.005'})}
-          ${field('points','Points (origination)',{value:0.02,step:'0.005'})}
+          <div class="grid two">
+            ${field('arv','ARV',{value:350000,step:'1000'})}
+            ${field('purchase','Purchase Price',{value:190000,step:'1000'})}
+          </div>
+          <div class="grid three">
+            ${field('repairs','Repairs',{value:50000,step:'1000'})}
+            ${field('rehabCont','Rehab Contingency (×)',{value:0.10,step:'0.01'})}
+            ${field('sellRate','Selling Costs (× ARV)',{value:0.08,step:'0.005'})}
+          </div>
+          <div class="grid three">
+            ${field('concessions','Buyer Concessions (× ARV)',{value:0.02,step:'0.005'})}
+            ${field('permits','Permits/Plans',{value:2500,step:'100'})}
+            ${field('staging','Staging',{value:1500,step:'100'})}
+          </div>
+          <div class="grid four">
+            ${field('hMonths','Holding Months',{value:6,step:'1'})}
+            ${field('hMonthly','Holding Monthly',{value:1200,step:'50'})}
+            ${field('ltv','LTV',{value:0.90,step:'0.01'})}
+            ${field('rate','Interest Rate (annual)',{value:0.12,step:'0.005'})}
+          </div>
+          <div class="grid three">
+            ${field('points','Points (origination)',{value:0.02,step:'0.005'})}
+            ${boolField('wholetail','Wholetail Exit (Light Rehab + MLS)',false)}
+            ${field('wholetailPct','Wholetail Rehab (× ARV)',{value:0.02,step:'0.005'})}
+          </div>
+          <div class="grid three">
+            ${field('partnerPref','Equity Partner Pref (annual)',{value:0.08,step:'0.005'})}
+            ${field('partnerSplit','Partner Split (post-pref, ×)',{value:0.50,step:'0.01'})}
+            ${field('yourSplit','Your Split (post-pref, ×)',{value:0.50,step:'0.01'})}
+          </div>
         `,
         compute:(v,sens=0)=>{
-          const arv=v.arv*(1+sens); const rehab=v.repairs*(1+v.rehabCont);
-          const selling=arv*(v.sellRate+v.concessions); const loan=Math.min(v.purchase+rehab, v.purchase*v.ltv);
+          const arv=v.arv*(1+sens);
+          // Standard flip
+          const rehab=v.repairs*(1+v.rehabCont);
+          const selling=arv*(v.sellRate+v.concessions);
+          const loan=Math.min(v.purchase+rehab, v.purchase*v.ltv);
           const interest=loan*v.rate*(v.hMonths/12); const points=loan*v.points; const holding=v.hMonthly*v.hMonths; const soft=v.permits+v.staging;
           const all=v.purchase+rehab+selling+holding+interest+points+soft; const profit=arv-all; const cash=v.purchase+rehab+holding+points+interest+soft - loan;
-          const roi=cash>0?profit/cash:NaN; const margin=arv>0?profit/arv:NaN; const breakeven=arv - (all - v.purchase);
-          return {kpi:money(profit),label:'Projected Profit',details:[['ARV (Adj)',money(arv)],['Rehab + Contingency',money(rehab)],['Selling + Concessions',money(selling)],['Loan Amount',money(loan)],['Interest',money(interest)],['Points',money(points)],['Holding Costs',money(holding)],['Soft Costs',money(soft)],['All-In Costs',money(all)],['ROI on Cash',isFinite(roi)?(roi*100).toFixed(1)+'%':'—'],['Profit Margin',isFinite(margin)?(margin*100).toFixed(1)+'%':'—'],['Breakeven Purchase Price',money(breakeven)],['Cash Invested (approx)',money(cash)]]};
+
+          // Wholetail variant
+          const wtRehab = arv*(v.wholetailPct||0);
+          const wtSelling = arv*Math.max(0.06, v.sellRate*0.9); // assume ~6% MLS if wholetail
+          const wtAll = v.purchase + wtRehab + wtSelling + holding + interest + points + (soft*0.5);
+          const wtProfit = arv - wtAll;
+
+          // Equity partner economics (simple pref prorated by months)
+          const pref = (v.partnerPref||0) * (v.hMonths/12) * Math.max(0,cash);
+          const postPrefProfit = (v.wholetail?wtProfit:profit) - pref;
+          const partnerTake = Math.max(0, postPrefProfit) * (v.partnerSplit||0);
+          const yourTake = (v.wholetail?wtProfit:profit) - partnerTake;
+
+          const roi=cash>0?profit/cash:NaN;
+          return {kpi:money(yourTake),label:(v.wholetail?'Wholetail':'Flip')+' — Your Net (after partner pref/split)',details:[
+            ['ARV (Adj)',money(arv)],['Rehab + Contingency',money(rehab)],['Selling + Concessions',money(selling)],
+            ['Loan Amount',money(loan)],['Interest',money(interest)],['Points',money(points)],['Holding Costs',money(holding)],['Soft Costs',money(soft)],
+            ['All-In (Flip)',money(all)],['Profit (Flip)',money(profit)],['Cash Invested',money(cash)],['ROI on Cash (Flip)',isFinite(roi)?(roi*100).toFixed(1)+'%':'—'],
+            ['Wholetail Rehab',money(wtRehab)],['Wholetail Selling',money(wtSelling)],['All-In (Wholetail)',money(wtAll)],['Profit (Wholetail)',money(wtProfit)],
+            ['Partner Pref (prorated)',money(pref)],['Partner Split',pct(v.partnerSplit||0)],['Your Split',pct(v.yourSplit||0)],
+            ['Your Net (Selected Exit)',money(yourTake)]
+          ]};
         }
       },
+
       apts: {
         name:'APARTMENTS',
         inputs: () => `
           ${selectField('mode','NOI Mode',[{value:'inplace',label:'In-Place'},{value:'stabilized',label:'Stabilized (Value-Add)'}],'inplace')}
-          ${field('units','Units',{value:8,step:'1'})}
-          ${field('avgRent','Avg Rent/Unit (mo)',{value:1200,step:'25'})}
-          ${field('otherInc','Other Income (mo)',{value:200,step:'25'})}
-          ${field('vacancy','Vacancy (×)',{value:0.07,step:'0.005'})}
-          ${field('opex','Operating Expenses (mo)',{value:2200,step:'50'})}
-          ${field('price','Purchase Price',{value:900000,step:'5000'})}
-          ${field('down','Down Payment (×)',{value:0.25,step:'0.01'})}
-          ${field('rate','Interest Rate (annual)',{value:0.065,step:'0.001'})}
-          ${field('am','Amortization (yrs)',{value:30,step:'1'})}
-          ${field('marketCap','Market Cap Rate (×)',{value:0.065,step:'0.001'})}
-          ${field('capex','Value-Add CapEx',{value:100000,step:'5000'})}
-          ${field('rentUpside','Rent Upside / Unit (mo)',{value:150,step:'25'})}
-          ${field('opexDelta','OPEX Change (mo)',{value:-200,step:'25'})}
-          ${field('leaseup','Lease-Up Months',{value:6,step:'1'})}
+          <div class="grid four">
+            ${field('units','Units',{value:12,step:'1'})}
+            ${field('avgRent','Avg Rent/Unit (mo)',{value:1200,step:'25'})}
+            ${field('otherInc','Other Income (mo)',{value:200,step:'25'})}
+            ${field('vacancy','Vacancy (×)',{value:0.07,step:'0.005'})}
+          </div>
+          <div class="grid four">
+            ${field('opex','Operating Expenses (mo)',{value:3200,step:'50'})}
+            ${field('price','Purchase Price',{value:1600000,step:'5000'})}
+            ${field('down','Down Payment (×)',{value:0.25,step:'0.01'})}
+            ${field('rate','1st Rate (annual)',{value:0.065,step:'0.001'})}
+          </div>
+          <div class="grid four">
+            ${field('am','Amortization (yrs)',{value:30,step:'1'})}
+            ${field('marketCap','Market Cap Rate (×)',{value:0.065,step:'0.001'})}
+            ${field('capex','Value-Add CapEx',{value:200000,step:'5000'})}
+            ${field('rentUpside','Rent Upside / Unit (mo)',{value:150,step:'25'})}
+          </div>
+          <div class="grid four">
+            ${field('opexDelta','OPEX Change (mo)',{value:-300,step:'25'})}
+            ${field('leaseup','Lease-Up Months',{value:6,step:'1'})}
+            ${selectField('scEnabled','Seller Carry 2nd?',[{value:'no',label:'No'},{value:'yes',label:'Yes'}],'yes')}
+            ${field('scPct','2nd Lien (% of Price)',{value:0.10,step:'0.01'})}
+          </div>
+          <div class="grid four">
+            ${field('scRate','2nd Rate (annual)',{value:0.07,step:'0.001'})}
+            ${field('scAm','2nd Amortization (yrs)',{value:30,step:'1'})}
+            ${field('scIO','2nd Interest-Only Months',{value:0,step:'1'})}
+            ${field('scBalloon','2nd Balloon (yrs, 0=none)',{value:0,step:'1'})}
+          </div>
+          <div class="label">Refi Model (Stabilized)</div>
+          <div class="grid four">
+            ${field('refiMonths','Refi in (months)',{value:24,step:'1'})}
+            ${field('refiLTV','Refi LTV (×)',{value:0.70,step:'0.01'})}
+            ${field('refiRateA','Refi Rate (annual)',{value:0.065,step:'0.001'})}
+            ${field('refiAm','Refi Amortization (yrs)',{value:30,step:'1'})}
+          </div>
         `,
         compute:(v,sens=0)=>{
-          const rent=v.avgRent*(1+sens); const gross=v.units*rent + v.otherInc; const eff=gross*(1 - v.vacancy); const noi=(eff - v.opex)*12;
-          const down=v.price*v.down; const loan=v.price-down; const ads=PI(loan,v.rate,v.am)*12; const dscr=ads>0?noi/ads:NaN;
-          const stRent=(v.avgRent+v.rentUpside)*(1+sens); const stGross=v.units*stRent + v.otherInc; const stEff=stGross*(1 - Math.max(0, v.vacancy-0.03)); const stNoi=(stEff - (v.opex + v.opexDelta))*12;
-          const valueAtCap=v.marketCap>0? stNoi / v.marketCap : NaN; const yoc = stNoi / (v.price + v.capex);
-          const breakeven = (v.opex*12 + ads) / ((v.avgRent*(1+sens))*12*v.units + v.otherInc*12);
-          return {kpi:money(v.mode==='stabilized'?stNoi:noi,0),label:v.mode==='stabilized'?'Stabilized NOI (Annual)':'In-Place NOI (Annual)',details:[['In-Place NOI',money(noi,0)],['Debt Service (Annual)',money(ads,0)],['DSCR',isFinite(dscr)?dscr.toFixed(2):'—'],['Stabilized NOI',money(stNoi,0)],['Value @ Market Cap',money(valueAtCap,0)],['Yield on Cost',isFinite(yoc)?(yoc*100).toFixed(1)+'%':'—'],['Breakeven Occupancy',isFinite(breakeven)?(breakeven*100).toFixed(1)+'%':'—'],['CapEx (Value-Add)',money(v.capex,0)]]};
+          const rent=v.avgRent*(1+sens), gross=v.units*rent + v.otherInc, eff=gross*(1 - v.vacancy), noi=(eff - v.opex)*12;
+          const down=v.price*v.down, loan=v.price-down; let ads=PI(loan,v.rate,v.am)*12;
+          // Seller 2nd
+          let scAds=0, scAmt=0;
+          if (v.scEnabled==='yes'){ scAmt=(v.scPct||0)*v.price; const base = (v.scIO>0)? PI_IO(scAmt,v.scRate): PI(scAmt,v.scRate,v.scAm); scAds = base*12; }
+          const totalDebt = ads + scAds;
+          const dscr = totalDebt>0? noi/totalDebt : NaN;
+
+          // Stabilized NOI and value
+          const stRent=(v.avgRent+v.rentUpside)*(1+sens), stGross=v.units*stRent + v.otherInc, stEff=stGross*(1 - Math.max(0, v.vacancy-0.03));
+          const stNoi=(stEff - (v.opex + v.opexDelta))*12;
+          const valueAtCap=v.marketCap>0? stNoi / v.marketCap : NaN;
+          const yoc = stNoi / (v.price + v.capex);
+
+          // Refi model
+          const refiVal = valueAtCap;
+          const refiLoan = (v.refiLTV||0)*refiVal;
+          const payoff1st = loan; const payoff2nd = scAmt; const cashOut = Math.max(0, refiLoan - (payoff1st + payoff2nd));
+          const refiADS = PI(refiLoan, v.refiRateA||0, v.refiAm||30)*12;
+          const refiDSCR = refiADS>0? stNoi/refiADS : NaN;
+
+          return {kpi:money(v.mode==='stabilized'?stNoi:noi,0),label:(v.mode==='stabilized'?'Stabilized NOI':'In-Place NOI')+' — DSCR '+(isFinite(dscr)?dscr.toFixed(2):'—'),
+            details:[
+              ['In-Place NOI',money(noi,0)],['Debt Service 1st (Annual)',money(ads,0)],['Debt Service 2nd (Annual)',money(scAds,0)],
+              ['Debt Service Total (Annual)',money(totalDebt,0)],['DSCR (Total Debt)', isFinite(dscr)?dscr.toFixed(2):'—'],
+              ['Stabilized NOI',money(stNoi,0)],['Value @ Market Cap',money(valueAtCap,0)],['Yield on Cost',isFinite(yoc)?(yoc*100).toFixed(1)+'%':'—'],
+              ['Refi Value (cap)',money(refiVal,0)],['Refi Loan',money(refiLoan,0)],['Cash-Out @ Refi',money(cashOut,0)],
+              ['Refi ADS',money(refiADS,0)],['Refi DSCR',isFinite(refiDSCR)?refiDSCR.toFixed(2):'—']
+            ]};
         }
       },
+
       land: {
         name:'LAND',
         inputs: () => `
-          ${field('marketValue','Market Value (Comps)',{value:60000,step:'1000'})}
-          ${field('discount','Base Discount (×)',{value:0.25,step:'0.01'})}
-          ${field('closing','Closing Costs',{value:1500,step:'100'})}
-          ${field('marketing','Marketing Costs',{value:500,step:'50'})}
-          ${field('profit','Desired Profit',{value:8000,step:'500'})}
-          ${field('acres','Parcel Size (acres)',{value:1.0,step:'0.1'})}
-          ${selectField('zoning','Zoning',[{value:'res',label:'Residential'},{value:'ag',label:'Agricultural'},{value:'comm',label:'Commercial'},{value:'recre',label:'Recreational'}],'res')}
-          ${field('dom','Days on Market Multiplier (×)',{value:1.0,step:'0.1'})}
+          <div class="grid four">
+            ${field('marketValue','Market Value (Comps)',{value:60000,step:'1000'})}
+            ${field('discount','Base Discount (×)',{value:0.25,step:'0.01'})}
+            ${field('closing','Closing Costs',{value:1500,step:'100'})}
+            ${field('marketing','Marketing Costs',{value:500,step:'50'})}
+          </div>
+          <div class="grid four">
+            ${field('profit','Desired Profit',{value:8000,step:'500'})}
+            ${field('acres','Parcel Size (acres)',{value:1.0,step:'0.1'})}
+            ${selectField('zoning','Zoning',[{value:'res',label:'Residential'},{value:'ag',label:'Agricultural'},{value:'comm',label:'Commercial'},{value:'recre',label:'Recreational'}],'res')}
+            ${field('dom','Days on Market Multiplier (×)',{value:1.0,step:'0.1'})}
+          </div>
           ${boolField('noAccess','Limited Access / Easement Risk',false)}
+          <div class="label">Seller Terms (Optional)</div>
+          <div class="grid four">
+            ${selectField('scEnabled','Seller Carry 2nd?',[{value:'no',label:'No'},{value:'yes',label:'Yes'}],'no')}
+            ${field('scAmt','2nd Lien Amount',{value:10000,step:'500'})}
+            ${field('scRate','2nd Rate (annual)',{value:0.09,step:'0.001'})}
+            ${field('scAm','2nd Amortization (yrs)',{value:5,step:'1'})}
+          </div>
+          <div class="grid three">
+            ${field('scIO','2nd Interest-Only Months',{value:0,step:'1'})}
+            ${field('scBalloon','2nd Balloon (yrs, 0=none)',{value:0,step:'1'})}
+            ${field('dp','Down Payment (if selling on terms)',{value:3000,step:'100'})}
+          </div>
         `,
         compute:(v,sens=0)=>{
-          const zoningFactor={res:1.0,ag:0.9,comm:1.1,recre:0.85}[v.zoning]||1.0; const accessPenalty=v.noAccess?0.1:0; const riskDisc=Math.max(0, v.discount*zoningFactor*(1 - accessPenalty))*(1 - (v.dom-1)*0.05);
-          const mv=v.marketValue*(1+sens); const mao=mv*riskDisc - v.closing - v.marketing - v.profit; const list=mv*riskDisc*1.25; const riskScore=Math.max(0, Math.min(100, 70*zoningFactor - (v.dom-1)*10 - (v.noAccess?15:0) + (v.acres>5?5:0)));
-          return {kpi:money(mao),label:'MAO (Risk-Adjusted Offer)',details:[['Market Value (Adj)',money(mv)],['Risk-Adjusted Discount',pct(riskDisc)],['Suggested List (Flip)',money(list)],['Risk Score (0-100)',Math.round(riskScore)]]};
+          const zoningFactor={res:1.0,ag:0.9,comm:1.1,recre:0.85}[v.zoning]||1.0; const accessPenalty=v.noAccess?0.1:0;
+          const riskDisc=Math.max(0, v.discount*zoningFactor*(1 - accessPenalty))*(1 - (v.dom-1)*0.05);
+          const mv=v.marketValue*(1+sens);
+          const mao=mv*riskDisc - v.closing - v.marketing - v.profit;
+          const list=mv*riskDisc*1.25; const riskScore=clamp(70*zoningFactor - (v.dom-1)*10 - (v.noAccess?15:0) + (v.acres>5?5:0),0,100);
+
+          let scAds=0; if(v.scEnabled==='yes' && v.scAmt>0){ const base=(v.scIO>0)? PI_IO(v.scAmt,v.scRate): PI(v.scAmt,v.scRate,v.scAm); scAds=base*12; }
+
+          return {kpi:money(mao),label:'MAO (Risk-Adjusted Offer)',details:[
+            ['Market Value (Adj)',money(mv)],['Risk-Adjusted Discount',pct(riskDisc)],['Suggested List (Flip)',money(list)],
+            ['Risk Score (0-100)',Math.round(riskScore)],['Seller Carry Payment (Annual)',money(scAds)],['Buyer Down Pmt (if sold on terms)',money(v.dp||0)]
+          ]};
         }
       },
+
       dcr: {
         name:'DCR',
         inputs: () => `
@@ -239,26 +412,151 @@
         `,
         compute:(v,sens=0)=>{
           const noi=v.noi*(1+sens); const ioAds=PI_IO(v.loan,v.rate)*12; const amAds=PI(v.loan,v.rate,v.am)*12; const dscrIO=ioAds>0?noi/ioAds:NaN; const dscr=amAds>0?noi/amAds:NaN;
-          function maxLoanByDSCR(target){ const adsTarget=noi/target; let lo=0,hi=1e8; for(let i=0;i<60;i++){ const mid=(lo+hi)/2; const a=PI(mid,v.rate,v.am)*12; if(a>adsTarget) hi=mid; else lo=mid; } return (lo+hi)/2; }
+          function maxLoanByDSCR(target){ const adsTarget=noi/target; let lo=0,hi=1e9; for(let i=0;i<60;i++){ const mid=(lo+hi)/2; const a=PI(mid,v.rate,v.am)*12; if(a>adsTarget) hi=mid; else lo=mid; } return (lo+hi)/2; }
           const byDSCR=maxLoanByDSCR(v.target); const byLTV=v.ltv*v.value; const lendable=Math.min(byDSCR,byLTV); const pass=(v.loan<=lendable)&&(dscr>=v.target);
-          return {kpi:isFinite(dscr)?dscr.toFixed(2):'—',label:'DSCR (Amortizing)',details:[['DSCR (Interest-Only Period)',isFinite(dscrIO)?dscrIO.toFixed(2):'—'],['DSCR (Amortizing)',isFinite(dscr)?dscr.toFixed(2):'—'],['Max Loan by DSCR',money(byDSCR)],['Max Loan by LTV',money(byLTV)],['Lendable (Lower of)',money(lendable)],['Pass/Fail vs Target',pass?'PASS ✅':'FAIL ❌']]};
+          return {kpi:isFinite(dscr)?dscr.toFixed(2):'—',label:'DSCR (Amortizing)',details:[
+            ['DSCR (Interest-Only)',isFinite(dscrIO)?dscrIO.toFixed(2):'—'],['DSCR (Amortizing)',isFinite(dscr)?dscr.toFixed(2):'—'],
+            ['Max Loan by DSCR',money(byDSCR)],['Max Loan by LTV',money(byLTV)],['Lendable (Lower of)',money(lendable)],['Pass/Fail vs Target',pass?'PASS ✅':'FAIL ❌']
+          ]};
+        }
+      },
+
+      subto: {
+        name:'SUBJECT-TO',
+        inputs: () => `
+          <div class="label">Deal & Close</div>
+          <div class="grid four">
+            ${field('price','Contract Price',{value:300000,step:'1000'})}
+            ${field('arrears','Arrears / Reinstatement',{value:5000,step:'500'})}
+            ${field('closing','Closing Costs',{value:3000,step:'250'})}
+            ${field('assignment','Your Fee / Profit at Close',{value:8000,step:'500'})}
+          </div>
+
+          <div class="label">Existing 1st (Stays in Place)</div>
+          <div class="grid four">
+            ${field('bal1','1st Loan Balance',{value:240000,step:'1000'})}
+            ${field('rate1','1st Rate (annual)',{value:0.035,step:'0.0005'})}
+            ${field('remYears1','1st Remaining Term (yrs)',{value:27,step:'1'})}
+            ${field('taxesIns','Taxes + Insurance (annual)',{value:4200,step:'100'})}
+          </div>
+          ${field('hoa','HOA (annual)',{value:0,step:'50'})}
+
+          <div class="label">Seller Carry 2nd (Optional)</div>
+          <div class="grid four">
+            ${selectField('scEnabled','Add a 2nd Lien?',[{value:'no',label:'No'},{value:'yes',label:'Yes'}],'yes')}
+            ${field('scPct','2nd as % of Price',{value:0.10,step:'0.01'})}
+            ${field('scRate','2nd Rate (annual)',{value:0.07,step:'0.001'})}
+            ${field('scAm','2nd Amortization (yrs)',{value:30,step:'1'})}
+          </div>
+          <div class="grid three">
+            ${field('scIO','2nd Interest-Only Months',{value:0,step:'1'})}
+            ${field('balloonYrs','2nd Balloon (yrs, 0=none)',{value:0,step:'1'})}
+            ${field('newMoney','Additional New Money Loan',{value:0,step:'1000'})}
+          </div>
+
+          <div class="label">Hold as Rental</div>
+          <div class="grid four">
+            ${field('rent','Gross Rent (mo)',{value:2600,step:'25'})}
+            ${field('otherInc','Other Income (mo)',{value:0,step:'10'})}
+            ${field('vacancy','Vacancy (×)',{value:0.06,step:'0.005'})}
+            ${field('opexMo','Operating Expenses (mo, excl. T&I/HOA)',{value:300,step:'25'})}
+          </div>
+
+          <div class="label">Refi Readiness (12-24 mo typical)</div>
+          <div class="grid four">
+            ${field('refiMonths','Refi in (months)',{value:18,step:'1'})}
+            ${field('refiARV','Refi Value / ARV',{value:350000,step:'1000'})}
+            ${field('refiLTV','Refi LTV (×)',{value:0.75,step:'0.01'})}
+            ${field('refiRate','Refi Rate (annual)',{value:0.065,step:'0.001'})}
+          </div>
+          ${field('refiAm','Refi Amortization (yrs)',{value:30,step:'1'})}
+        `,
+        compute:(v,sens=0)=>{
+          // Income
+          const rent = (v.rent||0)*(1+sens), gross = rent + (v.otherInc||0), eff = gross*(1 - (v.vacancy||0));
+          // 1st mortgage P&I
+          const pi1 = PI(v.bal1||0, v.rate1||0, v.remYears1||0);
+          // 2nd seller carry
+          let scAmt = 0, scPmtMo = 0; if (v.scEnabled==='yes') {
+            scAmt = (v.scPct||0) * (v.price||0);
+            const base = (v.scIO>0)? PI_IO(scAmt, v.scRate||0) : PI(scAmt, v.scRate||0, v.scAm||30);
+            scPmtMo = base;
+          }
+          // New money
+          const newMoneyMo = v.newMoney>0 ? PI(v.newMoney, 0.11, 2) : 0; // assume 11%/2yr if used; edit as needed
+
+          // Taxes/Insurance/HOA monthly
+          const ti = (v.taxesIns||0)/12, hoa = (v.hoa||0)/12;
+
+          // Totals
+          const monthlyDebt = pi1 + scPmtMo + newMoneyMo + ti + hoa;
+          const opex = (v.opexMo||0);
+          const noiMo = eff - opex - ti - hoa; // NOI before debt service
+          const noiYr = noiMo*12, ads = monthlyDebt*12, dscr = ads>0 ? (noiYr/ads) : NaN;
+
+          // Cash to close: financed by staying 1st + new 2nd (+ optional new money)
+          const price = v.price||0; const financed = (v.bal1||0) + scAmt + (v.newMoney||0);
+          const downAtClose = Math.max(0, price - financed);
+          const cashToClose = downAtClose + (v.arrears||0) + (v.closing||0) + (v.assignment||0);
+          const coc = cashToClose>0 ? ( (noiYr - ads) / cashToClose ) : NaN;
+
+          // Refi readiness
+          const refiVal = (v.refiARV||0)*(1+sens), refiLoan = (v.refiLTV||0)*refiVal;
+          const payoff1st = v.bal1||0, payoff2nd = scAmt + 0, payoffNew = v.newMoney||0;
+          const cashOut = Math.max(0, refiLoan - (payoff1st + payoff2nd + payoffNew));
+          const refiADS = PI(refiLoan, v.refiRate||0, v.refiAm||30)*12;
+          const refiDSCR = refiADS>0? (noiYr/refiADS) : NaN;
+
+          return {
+            kpi: isFinite(dscr)?dscr.toFixed(2):'—',
+            label: 'DSCR (Total Debt)',
+            details: [
+              ['Gross Rent (Adj, mo)', money(rent)],
+              ['Effective Income (mo)', money(eff)],
+              ['OPEX (mo, excl. T&I/HOA)', money(opex)],
+              ['Taxes+Ins (mo)', money(ti)],
+              ['HOA (mo)', money(hoa)],
+              ['NOI (Annual)', money(noiYr,0)],
+              ['1st P&I (mo)', money(pi1)],
+              ['2nd Payment (mo)', money(scPmtMo)],
+              ['New Money (mo)', money(newMoneyMo)],
+              ['Debt+Escrows (mo)', money(monthlyDebt)],
+              ['Debt Service (Annual)', money(ads,0)],
+              ['DSCR', isFinite(dscr)?dscr.toFixed(2):'—'],
+              ['Financed (1st + 2nd + new $)', money(financed)],
+              ['Cash to Close (est.)', money(cashToClose)],
+              ['Cash-on-Cash (Yr1)', isFinite(coc)?(coc*100).toFixed(1)+'%':'—'],
+              ['Refi Value', money(refiVal,0)],
+              ['Refi Loan', money(refiLoan,0)],
+              ['Refi ADS', money(refiADS,0)],
+              ['Refi DSCR', isFinite(refiDSCR)?refiDSCR.toFixed(2):'—'],
+              ['Cash-Out @ Refi (after payoffs)', money(cashOut,0)]
+            ]
+          };
         }
       }
     };
 
-    // State/UI wiring
+    /* ---------- State/UI wiring ---------- */
     let active='wholesale'; const inputsDiv=$('#inputs'), dgrid=$('#dgrid');
     function render(){ inputsDiv.innerHTML=calculators[active].inputs(); $('#kpi').textContent='$0'; $('#kpiLabel').textContent=calculators[active].name; dgrid.innerHTML=''; $('#details').style.display='none'; }
     function values(){ const v={}; inputsDiv.querySelectorAll('input,select').forEach(el=>{ const id=el.id; if(el.type==='checkbox'){ v[id]=el.checked; } else if(el.tagName==='SELECT'){ v[id]=el.value; } else { v[id]=parseFloat(el.value||'0'); } }); return v; }
     function calculate(){ const sens=(parseFloat($('#sensitivity').value)||0)/100; const res=calculators[active].compute(values(), sens); $('#kpi').textContent=res.kpi; $('#kpiLabel').textContent=calculators[active].name+' — '+res.label; dgrid.innerHTML=res.details.map(([a,b])=>`<div class="drow"><div class="dlabel">${a}</div><div class="dval">${b}</div></div>`).join(''); $('#details').style.display='block'; saveLast(); }
+
+    // Picker + chips
     $('#calcPicker').addEventListener('change',(e)=>{ active=e.target.value; setChip(active); render(); });
     $('#chips').addEventListener('click',(e)=>{ const ch=e.target.closest('.chip'); if(!ch) return; active=ch.dataset.value; $('#calcPicker').value=active; setChip(active); render(); });
-    $('#calcBtn').addEventListener('click',calculate);
-    $('#sensitivity').addEventListener('input',()=>{ $('#sensLbl').textContent=(parseFloat($('#sensitivity').value)||0)+'%'; });
     function setChip(val){ $$('#chips .chip').forEach(c=>c.classList.toggle('active', c.dataset.value===val)); }
 
+    // Market presets
+    $('#marketPreset').addEventListener('change',(e)=> applyMarketPreset(e.target.value));
+
+    // Main actions
+    $('#calcBtn').addEventListener('click',calculate);
+    $('#sensitivity').addEventListener('input',()=>{ $('#sensLbl').textContent=(parseFloat($('#sensitivity').value)||0)+'%'; });
+
     // Presets
-    const KEY='mbps_rei_pro_presets_v1'; const LAST='mbps_rei_pro_last';
+    const KEY='mbps_rei_pro_presets_v2'; const LAST='mbps_rei_pro_last_v2';
     function savePreset(){ const name=prompt('Preset name?'); if(!name) return; const data={active, values: values()}; const store=JSON.parse(localStorage.getItem(KEY)||'{}'); store[name]=data; localStorage.setItem(KEY, JSON.stringify(store)); alert('Saved preset: '+name); }
     function loadPreset(){ const store=JSON.parse(localStorage.getItem(KEY)||'{}'); const names=Object.keys(store); if(!names.length){ alert('No presets saved yet.'); return;} const name=prompt('Type preset name to load:\n'+names.join(', ')); if(!name||!store[name]) return; const data=store[name]; active=data.active; $('#calcPicker').value=active; setChip(active); render(); const v=data.values; Object.keys(v).forEach(k=>{ const el=document.getElementById(k); if(!el) return; if(el.type==='checkbox') el.checked=!!v[k]; else el.value=v[k]; }); }
     function saveLast(){ localStorage.setItem(LAST, JSON.stringify({active, values: values()})); }
@@ -272,12 +570,26 @@
     // Init
     render(); restoreLast();
 
-    // ----- PWA: SW + Install Prompt -----
-    if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('/service-worker.js').catch(()=>{}); }); }
+    /* ---------- PWA: SW + Install (project subpath) ---------- */
+    if('serviceWorker' in navigator){
+      window.addEventListener('load',()=>{
+        navigator.serviceWorker.register('/mbs-rei-pro/service-worker.js').catch(()=>{});
+      });
+    }
+    const INSTALL_KEY = 'mbps_rei_pro_installed_or_prompted';
     let deferredPrompt=null; const installBar=$('#installBar'); const installBtn=$('#installBtn'); const dismissBtn=$('#dismissBtn');
-    window.addEventListener('beforeinstallprompt',(e)=>{ e.preventDefault(); deferredPrompt=e; installBar.style.display='flex'; });
-    installBtn.addEventListener('click', async ()=>{ if(!deferredPrompt) return; deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; installBar.style.display='none'; });
-    dismissBtn.addEventListener('click',()=> installBar.style.display='none');
+    window.addEventListener('beforeinstallprompt',(e)=>{
+      if(localStorage.getItem(INSTALL_KEY)) return; // prompt once
+      e.preventDefault(); deferredPrompt=e; installBar.style.display='flex';
+    });
+    installBtn.addEventListener('click', async ()=>{
+      if(!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      localStorage.setItem(INSTALL_KEY,'1');
+      deferredPrompt=null; installBar.style.display='none';
+    });
+    dismissBtn.addEventListener('click',()=>{ localStorage.setItem(INSTALL_KEY,'1'); installBar.style.display='none'; });
   </script>
 </body>
 </html>
