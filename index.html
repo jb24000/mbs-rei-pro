@@ -67,6 +67,15 @@
     .install .btn {padding:8px 12px}
 
     @media (max-width:680px){body{padding:10px}.chips{grid-template-columns:repeat(3,1fr)}.toolbar{grid-template-columns:1fr}.toolbar .right{justify-content:stretch}}
+  /* --- FIX: Dropdown option visibility --- */
+    select option {
+      background-color: #1a1a1a;   /* dark dropdown background */
+      color: #ffffff;              /* white text */
+    }
+    select option:hover {
+      background-color: #00ff88;   /* neon green highlight on hover */
+      color: #000000;              /* black text when hovered */
+    }
   </style>
 </head>
 <body>
