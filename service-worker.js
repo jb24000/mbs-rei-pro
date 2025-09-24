@@ -1,10 +1,11 @@
-const CACHE_NAME = 'mbps-rei-pro-v3';
+const CACHE_NAME = 'mbps-rei-pro-v1';
+const BASE = '/mbs-rei-pro';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png',
+  `${BASE}/`,
+  `${BASE}/index.html`,
+  `${BASE}/manifest.json`,
+  `${BASE}/icon-192.png`,
+  `${BASE}/icon-512.png`,
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap'
 ];
 
@@ -23,18 +24,17 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   if (!event.request.url.startsWith('http')) return;
+
   event.respondWith(
-    caches.match(event.request).then(cached => cached || fetch(event.request).then(resp => {
-      if (event.request.destination === 'document' && resp && resp.status === 200) {
+    caches.match(event.request).then(cached => {
+      if (cached) return cached;
+      return fetch(event.request).then(resp => {
+        if (!resp || resp.status !== 200 || resp.type !== 'basic') return resp;
         const clone = resp.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put('/index.html', clone));
-      }
-      if (!resp || resp.status !== 200 || resp.type !== 'basic') return resp;
-      const clone = resp.clone();
-      caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-      return resp;
-    }).catch(() => caches.match('/index.html')))
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        return resp;
+      }).catch(() => caches.match(`${BASE}/index.html`));
+    })
   );
 });
 
-self.addEventListener('message', e => { if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting(); });
