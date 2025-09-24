@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MBPS REI Calculator Suite — PRO</title>
+  <meta name="theme-color" content="#000000" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="MBPS REI PRO" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}
+    body{font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(135deg,#0c0c0c,#1a1a1a 50%,#0f0f0f);min-height:100vh;color:#fff;margin:0;padding:14px}
+    .container{max-width:520px;margin:0 auto;border-radius:24px;background:linear-gradient(145deg,#1e1e1e,#0a0a0a);box-shadow:0 25px 50px -12px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px rgba(255,255,255,.05);overflow:hidden}
+    .top{padding:18px 18px 8px;border-bottom:1px solid rgba(255,255,255,.08);position:relative}
+    .title{font-size:18px;font-weight:800;letter-spacing:-.02em;text-align:center}
+    .subtitle{font-size:12px;color:#8a8a8a;text-align:center;margin:6px 0 10px}
+    .badgebar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+    .badge{font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:6px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05)}
+    .status{position:absolute;right:14px;top:12px;display:flex;gap:6px;align-items:center;font-size:10px}
+    .dot{width:8px;height:8px;border-radius:999px;background:#10b981;box-shadow:0 0 10px rgba(16,185,129,.5)}
+    .dot.offline{background:#ef4444;box-shadow:0 0 10px rgba(239,68,68,.5)}
+    .display{margin:10px 14px 14px;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.4);border-radius:14px;padding:14px}
+    .kpi{font-size:30px;font-weight:900;color:#00ff88;text-shadow:0 0 20px rgba(0,255,136,.25)}
+    .freq{font-size:11px;color:#707070;letter-spacing:.5px}
+    .toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:0 14px 12px}
+    .select,.input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;color:#fff;font-size:14px}
+    .select{appearance:none;background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3e%3cpath d='M6 8l4 4 4-4' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");background-position:right 10px center;background-repeat:no-repeat;background-size:16px;padding-right:34px}
+    .btn{background:linear-gradient(135deg,#00ff88,#00cc6a);color:#000;border:none;border-radius:10px;padding:11px 14px;font-weight:800;letter-spacing:.3px;cursor:pointer;box-shadow:0 6px 18px rgba(0,255,136,.28)}
+    .chips{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:0 14px 10px}
+    .chip{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#ddd;padding:8px 8px;font-size:11px;border-radius:9px;text-align:center;cursor:pointer;user-select:none}
+    .chip.active{border-color:#00ff88;background:rgba(0,255,136,.08);color:#00ff88;box-shadow:inset 0 0 0 3px rgba(0,255,136,.1)}
+    .panel{padding:14px}
+    .grid{display:grid;gap:12px}
+    .label{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#cfcfcf;margin-bottom:6px}
+    .row{display:flex;gap:8px}
+    .calculate{margin:10px 14px 0}
+    .details{display:none;padding:12px 14px;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.18)}
+    .dgrid{display:grid;gap:8px}
+    .drow{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.06);padding:6px 0}
+    .drow:last-child{border-bottom:none}
+    .dlabel{font-size:12px;color:#a9a9a9}
+    .dval{font-size:13px;font-family:'Inter',monospace}
+    .foot{padding:10px 14px;border-top:1px solid rgba(255,255,255,.06);display:flex;gap:8px;align-items:center;justify-content:space-between;background:rgba(255,255,255,.02)}
+    .tiny{font-size:10px;color:#8a8a8a}
+    .two{grid-template-columns:repeat(2,1fr)} .three{grid-template-columns:repeat(3,1fr)}
+    .install {position: fixed; bottom: 18px; right: 18px; display:none; gap:10px; align-items:center; background:#101414; border:1px solid rgba(255,255,255,.12); padding:10px 12px; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.35)}
+    .install .btn {padding:8px 12px}
+    @media (max-width:520px){body{padding:10px}.chips{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+    <div class="top">
+      <div class="status"><span class="dot" id="dot"></span><span id="status">Online</span></div>
+      <div class="title">MBPS REI Calculator Suite — PRO</div>
+      <div class="subtitle">Wholesale Exits • Flip Soft Costs • Stabilized Multifamily • Land Risk • DCR IO/Balloon</div>
+      <div class="badgebar">
+        <div class="badge">MBPS</div>
+        <div class="badge">Installable</div>
+        <div class="badge">Offline-Ready</div>
+        <div class="badge">Local Presets</div>
+        <div class="badge">Sensitivity</div>
+      </div>
+      <div class="display">
+        <div class="kpi" id="kpi">$0</div>
+        <div class="freq" id="kpiLabel">SELECT A CALCULATOR</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <select class="select" id="calcPicker">
+        <option value="wholesale">Wholesaling</option>
+        <option value="flip">Fix & Flip</option>
+        <option value="apts">Apartments</option>
+        <option value="land">Land</option>
+        <option value="dcr">DCR (Commercial)</option>
+      </select>
+      <button class="btn" id="savePreset">Save</button>
+      <button class="btn" id="loadPreset">Load</button>
+    </div>
+
+    <div class="chips" id="chips">
+      <div class="chip active" data-value="wholesale">Wholesale</div>
+      <div class="chip" data-value="flip">Flip</div>
+      <div class="chip" data-value="apts">Apts</div>
+      <div class="chip" data-value="land">Land</div>
+      <div class="chip" data-value="dcr">DCR</div>
+    </div>
+
+    <div class="panel"><div class="grid" id="inputs"></div></div>
+    <div class="calculate"><button class="btn" id="calcBtn" style="width:100%">Calculate</button></div>
+    <div class="details" id="details"><div class="dgrid" id="dgrid"></div></div>
+    <div class="foot">
+      <div class="row" style="gap:10px">
+        <span class="tiny">Sensitivity:</span>
+        <input type="range" id="sensitivity" min="-15" max="15" step="1" value="0" />
+        <span class="tiny" id="sensLbl">0%</span>
+      </div>
+      <div class="row">
+        <button class="btn" id="exportJson">Export</button>
+        <button class="btn" id="print">Print</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="install" id="installBar">
+    <span class="tiny">Install MBPS REI PRO?</span>
+    <button class="btn" id="installBtn">Install</button>
+    <button class="btn" id="dismissBtn" style="background:#2a2a2a;color:#ddd">Later</button>
+  </div>
+
+  <script>
+    // Online/Offline
+    function updateStatus(){ const d=document.getElementById('dot'), s=document.getElementById('status'); if(navigator.onLine){d.classList.remove('offline'); s.textContent='Online'} else {d.classList.add('offline'); s.textContent='Offline'} }
+    window.addEventListener('online',updateStatus); window.addEventListener('offline',updateStatus); updateStatus();
+
+    // Helpers
+    const $ = (q)=>document.querySelector(q); const $$=(q)=>Array.from(document.querySelectorAll(q));
+    const money=(n,d=0)=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:d,maximumFractionDigits:d}).format(isFinite(n)?n:0);
+    const pct=(n)=>isFinite(n)?(n*100).toFixed(2)+'%':'—';
+    const PI=(loan, r, years)=>{const m=r/12, n=years*12; return m===0?loan/n:(loan*m)/(1-Math.pow(1+m,-n));};
+    const PI_IO=(loan,r)=>loan*(r/12);
+    function field(id,label,opts={}){ const {type='number',step='1',placeholder='',value=''}=opts; return `<div><div class="label">${label}</div><input class="input" type="${type}" step="${step}" id="${id}" placeholder="${placeholder}" value="${value}"></div>`}
+    function selectField(id,label,options,init){ return `<div><div class="label">${label}</div><select id="${id}" class="select">${options.map(o=>`<option value="${o.value}" ${o.value==init?'selected':''}>${o.label}</option>`).join('')}</select></div>`}
+    function boolField(id,label,init=false){ return `<div><label class="label" style="display:flex;align-items:center;gap:8px"><input id="${id}" type="checkbox" ${init?'checked':''}/> ${label}</label></div>`}
+
+    // Calculators
+    const calculators = {
+      wholesale: {
+        name:'WHOLESALE',
+        inputs: () => `
+          ${selectField('exit','Exit Strategy',[{value:'assign',label:'Assignment'},{value:'double',label:'Double Close'},{value:'novation',label:'Novation'}],'assign')}
+          ${field('arv','After Repair Value (ARV)',{value:250000,step:'1000'})}
+          ${field('repairs','Repairs',{value:35000,step:'1000'})}
+          ${field('discount','Discount (× ARV)',{value:0.70,step:'0.01'})}
+          ${field('assignment','Assignment Fee',{value:10000,step:'500'})}
+          ${field('misc','Misc/Closing Cushions',{value:0,step:'500'})}
+          ${selectField('buyerRisk','Buyer Profile (Risk)',[{value:'conservative',label:'Conservative (−5%)'},{value:'standard',label:'Standard'},{value:'aggressive',label:'Aggressive (+5%)'}],'standard')}
+        `,
+        compute:(v,sens=0)=>{
+          const adj=v.discount + (v.buyerRisk==='aggressive'?0.05:(v.buyerRisk==='conservative'?-0.05:0));
+          const arvAdj=v.arv*(1+sens);
+          let exitCost=0; if(v.exit==='double') exitCost=Math.max(1500,0.01*arvAdj); if(v.exit==='novation') exitCost=0.02*arvAdj;
+          const buyerPrice=arvAdj*adj - v.repairs - v.misc - exitCost; const mao=buyerPrice - v.assignment;
+          return {kpi:money(mao),label:'MAO (Offer to Seller)',details:[['ARV (Adj)',money(arvAdj)],['Exit Cost ('+v.exit+')',money(exitCost)],['Investor Buyer Price (Target)',money(buyerPrice)],['Your Assignment Profit',money(v.assignment)],['MAO',money(mao)]]};
+        }
+      },
+      flip: {
+        name:'FIX & FLIP',
+        inputs: () => `
+          ${field('arv','ARV',{value:350000,step:'1000'})}
+          ${field('purchase','Purchase Price',{value:190000,step:'1000'})}
+          ${field('repairs','Repairs',{value:50000,step:'1000'})}
+          ${field('rehabCont','Rehab Contingency (×)',{value:0.10,step:'0.01'})}
+          ${field('sellRate','Selling Costs (× ARV)',{value:0.08,step:'0.005'})}
+          ${field('concessions','Buyer Concessions (× ARV)',{value:0.02,step:'0.005'})}
+          ${field('permits','Permits/Plans',{value:2500,step:'100'})}
+          ${field('staging','Staging',{value:1500,step:'100'})}
+          ${field('hMonths','Holding Months',{value:6,step:'1'})}
+          ${field('hMonthly','Holding Monthly',{value:1200,step:'50'})}
+          ${field('ltv','LTV',{value:0.90,step:'0.01'})}
+          ${field('rate','Interest Rate (annual)',{value:0.12,step:'0.005'})}
+          ${field('points','Points (origination)',{value:0.02,step:'0.005'})}
+        `,
+        compute:(v,sens=0)=>{
+          const arv=v.arv*(1+sens); const rehab=v.repairs*(1+v.rehabCont);
+          const selling=arv*(v.sellRate+v.concessions); const loan=Math.min(v.purchase+rehab, v.purchase*v.ltv);
+          const interest=loan*v.rate*(v.hMonths/12); const points=loan*v.points; const holding=v.hMonthly*v.hMonths; const soft=v.permits+v.staging;
+          const all=v.purchase+rehab+selling+holding+interest+points+soft; const profit=arv-all; const cash=v.purchase+rehab+holding+points+interest+soft - loan;
+          const roi=cash>0?profit/cash:NaN; const margin=arv>0?profit/arv:NaN; const breakeven=arv - (all - v.purchase);
+          return {kpi:money(profit),label:'Projected Profit',details:[['ARV (Adj)',money(arv)],['Rehab + Contingency',money(rehab)],['Selling + Concessions',money(selling)],['Loan Amount',money(loan)],['Interest',money(interest)],['Points',money(points)],['Holding Costs',money(holding)],['Soft Costs',money(soft)],['All-In Costs',money(all)],['ROI on Cash',isFinite(roi)?(roi*100).toFixed(1)+'%':'—'],['Profit Margin',isFinite(margin)?(margin*100).toFixed(1)+'%':'—'],['Breakeven Purchase Price',money(breakeven)],['Cash Invested (approx)',money(cash)]]};
+        }
+      },
+      apts: {
+        name:'APARTMENTS',
+        inputs: () => `
+          ${selectField('mode','NOI Mode',[{value:'inplace',label:'In-Place'},{value:'stabilized',label:'Stabilized (Value-Add)'}],'inplace')}
+          ${field('units','Units',{value:8,step:'1'})}
+          ${field('avgRent','Avg Rent/Unit (mo)',{value:1200,step:'25'})}
+          ${field('otherInc','Other Income (mo)',{value:200,step:'25'})}
+          ${field('vacancy','Vacancy (×)',{value:0.07,step:'0.005'})}
+          ${field('opex','Operating Expenses (mo)',{value:2200,step:'50'})}
+          ${field('price','Purchase Price',{value:900000,step:'5000'})}
+          ${field('down','Down Payment (×)',{value:0.25,step:'0.01'})}
+          ${field('rate','Interest Rate (annual)',{value:0.065,step:'0.001'})}
+          ${field('am','Amortization (yrs)',{value:30,step:'1'})}
+          ${field('marketCap','Market Cap Rate (×)',{value:0.065,step:'0.001'})}
+          ${field('capex','Value-Add CapEx',{value:100000,step:'5000'})}
+          ${field('rentUpside','Rent Upside / Unit (mo)',{value:150,step:'25'})}
+          ${field('opexDelta','OPEX Change (mo)',{value:-200,step:'25'})}
+          ${field('leaseup','Lease-Up Months',{value:6,step:'1'})}
+        `,
+        compute:(v,sens=0)=>{
+          const rent=v.avgRent*(1+sens); const gross=v.units*rent + v.otherInc; const eff=gross*(1 - v.vacancy); const noi=(eff - v.opex)*12;
+          const down=v.price*v.down; const loan=v.price-down; const ads=PI(loan,v.rate,v.am)*12; const dscr=ads>0?noi/ads:NaN;
+          const stRent=(v.avgRent+v.rentUpside)*(1+sens); const stGross=v.units*stRent + v.otherInc; const stEff=stGross*(1 - Math.max(0, v.vacancy-0.03)); const stNoi=(stEff - (v.opex + v.opexDelta))*12;
+          const valueAtCap=v.marketCap>0? stNoi / v.marketCap : NaN; const yoc = stNoi / (v.price + v.capex);
+          const breakeven = (v.opex*12 + ads) / ((v.avgRent*(1+sens))*12*v.units + v.otherInc*12);
+          return {kpi:money(v.mode==='stabilized'?stNoi:noi,0),label:v.mode==='stabilized'?'Stabilized NOI (Annual)':'In-Place NOI (Annual)',details:[['In-Place NOI',money(noi,0)],['Debt Service (Annual)',money(ads,0)],['DSCR',isFinite(dscr)?dscr.toFixed(2):'—'],['Stabilized NOI',money(stNoi,0)],['Value @ Market Cap',money(valueAtCap,0)],['Yield on Cost',isFinite(yoc)?(yoc*100).toFixed(1)+'%':'—'],['Breakeven Occupancy',isFinite(breakeven)?(breakeven*100).toFixed(1)+'%':'—'],['CapEx (Value-Add)',money(v.capex,0)]]};
+        }
+      },
+      land: {
+        name:'LAND',
+        inputs: () => `
+          ${field('marketValue','Market Value (Comps)',{value:60000,step:'1000'})}
+          ${field('discount','Base Discount (×)',{value:0.25,step:'0.01'})}
+          ${field('closing','Closing Costs',{value:1500,step:'100'})}
+          ${field('marketing','Marketing Costs',{value:500,step:'50'})}
+          ${field('profit','Desired Profit',{value:8000,step:'500'})}
+          ${field('acres','Parcel Size (acres)',{value:1.0,step:'0.1'})}
+          ${selectField('zoning','Zoning',[{value:'res',label:'Residential'},{value:'ag',label:'Agricultural'},{value:'comm',label:'Commercial'},{value:'recre',label:'Recreational'}],'res')}
+          ${field('dom','Days on Market Multiplier (×)',{value:1.0,step:'0.1'})}
+          ${boolField('noAccess','Limited Access / Easement Risk',false)}
+        `,
+        compute:(v,sens=0)=>{
+          const zoningFactor={res:1.0,ag:0.9,comm:1.1,recre:0.85}[v.zoning]||1.0; const accessPenalty=v.noAccess?0.1:0; const riskDisc=Math.max(0, v.discount*zoningFactor*(1 - accessPenalty))*(1 - (v.dom-1)*0.05);
+          const mv=v.marketValue*(1+sens); const mao=mv*riskDisc - v.closing - v.marketing - v.profit; const list=mv*riskDisc*1.25; const riskScore=Math.max(0, Math.min(100, 70*zoningFactor - (v.dom-1)*10 - (v.noAccess?15:0) + (v.acres>5?5:0)));
+          return {kpi:money(mao),label:'MAO (Risk-Adjusted Offer)',details:[['Market Value (Adj)',money(mv)],['Risk-Adjusted Discount',pct(riskDisc)],['Suggested List (Flip)',money(list)],['Risk Score (0-100)',Math.round(riskScore)]]};
+        }
+      },
+      dcr: {
+        name:'DCR',
+        inputs: () => `
+          ${field('noi','NOI (Annual)',{value:120000,step:'5000'})}
+          ${field('loan','Loan Amount',{value:1500000,step:'10000'})}
+          ${field('rate','Interest Rate (annual)',{value:0.0675,step:'0.0005'})}
+          ${field('am','Amortization (yrs)',{value:25,step:'1'})}
+          ${field('ioMonths','Interest-Only Months',{value:12,step:'1'})}
+          ${field('balloonYrs','Balloon Term (yrs)',{value:5,step:'1'})}
+          ${field('ltv','LTV Limit (×)',{value:0.70,step:'0.01'})}
+          ${field('value','Property Value (for LTV)',{value:2000000,step:'10000'})}
+          ${field('target','Target DSCR',{value:1.25,step:'0.01'})}
+        `,
+        compute:(v,sens=0)=>{
+          const noi=v.noi*(1+sens); const ioAds=PI_IO(v.loan,v.rate)*12; const amAds=PI(v.loan,v.rate,v.am)*12; const dscrIO=ioAds>0?noi/ioAds:NaN; const dscr=amAds>0?noi/amAds:NaN;
+          function maxLoanByDSCR(target){ const adsTarget=noi/target; let lo=0,hi=1e8; for(let i=0;i<60;i++){ const mid=(lo+hi)/2; const a=PI(mid,v.rate,v.am)*12; if(a>adsTarget) hi=mid; else lo=mid; } return (lo+hi)/2; }
+          const byDSCR=maxLoanByDSCR(v.target); const byLTV=v.ltv*v.value; const lendable=Math.min(byDSCR,byLTV); const pass=(v.loan<=lendable)&&(dscr>=v.target);
+          return {kpi:isFinite(dscr)?dscr.toFixed(2):'—',label:'DSCR (Amortizing)',details:[['DSCR (Interest-Only Period)',isFinite(dscrIO)?dscrIO.toFixed(2):'—'],['DSCR (Amortizing)',isFinite(dscr)?dscr.toFixed(2):'—'],['Max Loan by DSCR',money(byDSCR)],['Max Loan by LTV',money(byLTV)],['Lendable (Lower of)',money(lendable)],['Pass/Fail vs Target',pass?'PASS ✅':'FAIL ❌']]};
+        }
+      }
+    };
+
+    // State/UI wiring
+    let active='wholesale'; const inputsDiv=$('#inputs'), dgrid=$('#dgrid');
+    function render(){ inputsDiv.innerHTML=calculators[active].inputs(); $('#kpi').textContent='$0'; $('#kpiLabel').textContent=calculators[active].name; dgrid.innerHTML=''; $('#details').style.display='none'; }
+    function values(){ const v={}; inputsDiv.querySelectorAll('input,select').forEach(el=>{ const id=el.id; if(el.type==='checkbox'){ v[id]=el.checked; } else if(el.tagName==='SELECT'){ v[id]=el.value; } else { v[id]=parseFloat(el.value||'0'); } }); return v; }
+    function calculate(){ const sens=(parseFloat($('#sensitivity').value)||0)/100; const res=calculators[active].compute(values(), sens); $('#kpi').textContent=res.kpi; $('#kpiLabel').textContent=calculators[active].name+' — '+res.label; dgrid.innerHTML=res.details.map(([a,b])=>`<div class="drow"><div class="dlabel">${a}</div><div class="dval">${b}</div></div>`).join(''); $('#details').style.display='block'; saveLast(); }
+    $('#calcPicker').addEventListener('change',(e)=>{ active=e.target.value; setChip(active); render(); });
+    $('#chips').addEventListener('click',(e)=>{ const ch=e.target.closest('.chip'); if(!ch) return; active=ch.dataset.value; $('#calcPicker').value=active; setChip(active); render(); });
+    $('#calcBtn').addEventListener('click',calculate);
+    $('#sensitivity').addEventListener('input',()=>{ $('#sensLbl').textContent=(parseFloat($('#sensitivity').value)||0)+'%'; });
+    function setChip(val){ $$('#chips .chip').forEach(c=>c.classList.toggle('active', c.dataset.value===val)); }
+
+    // Presets
+    const KEY='mbps_rei_pro_presets_v1'; const LAST='mbps_rei_pro_last';
+    function savePreset(){ const name=prompt('Preset name?'); if(!name) return; const data={active, values: values()}; const store=JSON.parse(localStorage.getItem(KEY)||'{}'); store[name]=data; localStorage.setItem(KEY, JSON.stringify(store)); alert('Saved preset: '+name); }
+    function loadPreset(){ const store=JSON.parse(localStorage.getItem(KEY)||'{}'); const names=Object.keys(store); if(!names.length){ alert('No presets saved yet.'); return;} const name=prompt('Type preset name to load:\n'+names.join(', ')); if(!name||!store[name]) return; const data=store[name]; active=data.active; $('#calcPicker').value=active; setChip(active); render(); const v=data.values; Object.keys(v).forEach(k=>{ const el=document.getElementById(k); if(!el) return; if(el.type==='checkbox') el.checked=!!v[k]; else el.value=v[k]; }); }
+    function saveLast(){ localStorage.setItem(LAST, JSON.stringify({active, values: values()})); }
+    function restoreLast(){ const obj=JSON.parse(localStorage.getItem(LAST)||'null'); if(!obj) return; active=obj.active||active; $('#calcPicker').value=active; setChip(active); render(); const v=obj.values||{}; Object.keys(v).forEach(k=>{ const el=document.getElementById(k); if(!el) return; if(el.type==='checkbox') el.checked=!!v[k]; else el.value=v[k]; }); }
+    $('#savePreset').addEventListener('click',savePreset); $('#loadPreset').addEventListener('click',loadPreset);
+
+    // Export / Print
+    $('#exportJson').addEventListener('click',()=>{ const blob=new Blob([JSON.stringify({active, values: values()}, null, 2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='mbps-rei-scenario.json'; a.click(); URL.revokeObjectURL(a.href); });
+    $('#print').addEventListener('click',()=>window.print());
+
+    // Init
+    render(); restoreLast();
+
+    // ----- PWA: SW + Install Prompt -----
+    if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('/service-worker.js').catch(()=>{}); }); }
+    let deferredPrompt=null; const installBar=$('#installBar'); const installBtn=$('#installBtn'); const dismissBtn=$('#dismissBtn');
+    window.addEventListener('beforeinstallprompt',(e)=>{ e.preventDefault(); deferredPrompt=e; installBar.style.display='flex'; });
+    installBtn.addEventListener('click', async ()=>{ if(!deferredPrompt) return; deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; installBar.style.display='none'; });
+    dismissBtn.addEventListener('click',()=> installBar.style.display='none');
+  </script>
+</body>
+</html>
