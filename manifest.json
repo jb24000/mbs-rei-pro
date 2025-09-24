@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
-  "description": "Million-dollar wholesaler grade REI calculators - works offline!",
+  "description": "Million-dollar wholesaler grade REI calculators — offline-ready PWA.",
   "icons": [
     { "src": "/mbs-rei-pro/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/mbs-rei-pro/icon-512.png", "sizes": "512x512", "type": "image/png" }
