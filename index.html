@@ -2,603 +2,1126 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MBPS REI Calculator Suite — PRO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus Intervention - Eisenhower Matrix + Tasks & Calendar</title>
 
-  <!-- PWA (project subpath aware) -->
-  <meta name="theme-color" content="#000000" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="MBPS REI PRO" />
-  <link rel="manifest" href="/mbs-rei-pro/manifest.json" />
-  <link rel="apple-touch-icon" href="/mbs-rei-pro/icon-192.png" />
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Focus Intervention">
+  <meta name="application-name" content="Focus Intervention">
+  <meta name="msapplication-TileColor" content="#0f172a">
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/svg+xml"href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="black"/><text x="50%" y="50%" dy=".35em" text-anchor="middle" font-family="Inter,Arial" font-weight="700" font-size="28" fill="#00ff88">MB</text></svg>'>
+  <!-- Manifest & Icons -->
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="./icons/icon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./icons/icon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
+
   <style>
-    *{box-sizing:border-box}
-    body{font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(135deg,#0c0c0c,#1a1a1a 50%,#0f0f0f);min-height:100vh;color:#fff;margin:0;padding:14px}
-    .container{max-width:680px;margin:0 auto;border-radius:24px;background:linear-gradient(145deg,#1e1e1e,#0a0a0a);box-shadow:0 25px 50px -12px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px rgba(255,255,255,.05);overflow:hidden}
-    .top{padding:18px 18px 8px;border-bottom:1px solid rgba(255,255,255,.08);position:relative}
-    .title{font-size:18px;font-weight:800;letter-spacing:-.02em;text-align:center}
-    .subtitle{font-size:12px;color:#8a8a8a;text-align:center;margin:6px 0 10px}
-    .badgebar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-    .badge{font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:6px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05)}
-    .status{position:absolute;right:14px;top:12px;display:flex;gap:6px;align-items:center;font-size:10px}
-    .dot{width:8px;height:8px;border-radius:999px;background:#10b981;box-shadow:0 0 10px rgba(16,185,129,.5)}
-    .dot.offline{background:#ef4444;box-shadow:0 0 10px rgba(239,68,68,.5)}
-    .display{margin:10px 14px 14px;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.4);border-radius:14px;padding:14px}
-    .kpi{font-size:30px;font-weight:900;color:#00ff88;text-shadow:0 0 20px rgba(0,255,136,.25)}
-    .freq{font-size:11px;color:#707070;letter-spacing:.5px}
-
-    .toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center;justify-content:space-between;padding:0 14px 12px}
-    .toolbar .right{display:flex;gap:8px;justify-content:flex-end}
-    .select,.input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;color:#fff;font-size:14px}
-    .select{appearance:none;background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3e%3cpath d='M6 8l4 4 4-4' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");background-position:right 10px center;background-repeat:no-repeat;background-size:16px;padding-right:34px}
-    .btn{background:linear-gradient(135deg,#00ff88,#00cc6a);color:#000;border:none;border-radius:10px;padding:11px 14px;font-weight:800;letter-spacing:.3px;cursor:pointer;box-shadow:0 6px 18px rgba(0,255,136,.28)}
-
-    .chips{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:0 14px 10px}
-    .chip{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#ddd;padding:8px 8px;font-size:11px;border-radius:9px;text-align:center;cursor:pointer;user-select:none}
-    .chip.active{border-color:#00ff88;background:rgba(0,255,136,.08);color:#00ff88;box-shadow:inset 0 0 0 3px rgba(0,255,136,.1)}
-
-    .panel{padding:14px}
-    .grid{display:grid;gap:12px}
-    .label{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#cfcfcf;margin-bottom:6px}
-    .row{display:flex;gap:8px}
-
-    .calculate{margin:10px 14px 0}
-    .details{display:none;padding:12px 14px;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.18)}
-    .dgrid{display:grid;gap:8px}
-    .drow{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.06);padding:6px 0}
-    .drow:last-child{border-bottom:none}
-    .dlabel{font-size:12px;color:#a9a9a9}
-    .dval{font-size:13px;font-family:'Inter',monospace}
-
-    .foot{padding:10px 14px;border-top:1px solid rgba(255,255,255,.06);display:flex;gap:8px;align-items:center;justify-content:space-between;background:rgba(255,255,255,.02)}
-    .tiny{font-size:10px;color:#8a8a8a}
-    .two{grid-template-columns:repeat(2,1fr)} .three{grid-template-columns:repeat(3,1fr)} .four{grid-template-columns:repeat(4,1fr)}
-
-    /* Install prompt bar */
-    .install {position: fixed; bottom: 18px; right: 18px; display:none; gap:10px; align-items:center; background:#101414; border:1px solid rgba(255,255,255,.12); padding:10px 12px; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.35)}
-    .install .btn {padding:8px 12px}
-
-    @media (max-width:680px){body{padding:10px}.chips{grid-template-columns:repeat(3,1fr)}.toolbar{grid-template-columns:1fr}.toolbar .right{justify-content:stretch}}
-  /* --- FIX: Dropdown option visibility --- */
-    select option {
-      background-color: #1a1a1a;   /* dark dropdown background */
-      color: #ffffff;              /* white text */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root{
+      --bg1:#0f172a; --bg2:#1e293b; --panel:#0f182a; --panel2:#111827; --border:#334155; --accent:#3b82f6;
+      --ok:#10b981; --warn:#f59e0b; --danger:#ef4444; --muted:#94a3b8;
     }
-    select option:hover {
-      background-color: #00ff88;   /* neon green highlight on hover */
-      color: #000000;              /* black text when hovered */
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+           background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
+           color: white; min-height: 100vh; overflow-x: hidden; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+
+    .header { text-align: center; margin-bottom: 30px; position: relative; }
+    .header h1 { font-size: 2.2em; margin-bottom: 10px; color: var(--accent); }
+
+    .focus-status { display:flex; align-items:center; justify-content:center; gap:15px; margin:20px 0; padding:15px;
+      background: rgba(15, 23, 42, 0.8); border-radius:12px; border:2px solid var(--border); }
+    .focus-indicator { width:16px; height:16px; border-radius:50%; background: var(--danger); animation:pulse 2s infinite; }
+    .focus-indicator.active { background: var(--ok); }
+    .timer-display { font-size:1.5em; font-weight:bold; color: var(--accent); }
+    .offline-indicator { background: var(--danger); color:white; padding:4px 8px; border-radius:4px; font-size:.8em; animation:pulse 2s infinite; }
+
+    .intervention-popup { position:fixed; inset:0; background: rgba(0,0,0,.95); display:none; align-items:center; justify-content:center; z-index:1000; animation:fadeIn .3s ease; }
+    .popup-content { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding:40px; border-radius:16px; text-align:center; max-width:500px; border:2px solid var(--accent); box-shadow:0 20px 60px rgba(59,130,246,.3); }
+    .intervention-title { font-size:2em; color: var(--danger); margin-bottom:15px; animation:shake .5s ease; }
+    .intervention-message { font-size:1.2em; margin-bottom:25px; line-height:1.6; }
+
+    .controls { display:flex; flex-wrap:wrap; gap:15px; justify-content:center; margin:25px 0; }
+    .btn { background: linear-gradient(135deg, var(--accent) 0%, #1d4ed8 100%); color:white; border:none; padding:12px 24px; border-radius:8px; cursor:pointer; font-size:16px; font-weight:500; transition:all .3s ease; display:flex; align-items:center; gap:8px; }
+    .btn:hover { transform: translateY(-2px); box-shadow:0 8px 20px rgba(59,130,246,.4); }
+    .btn-danger{ background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%); }
+    .btn-success{ background: linear-gradient(135deg, var(--ok) 0%, #059669 100%); }
+    .btn-warning{ background: linear-gradient(135deg, var(--warn) 0%, #d97706 100%); }
+    .btn-ghost { background: transparent; border:1px solid var(--border); }
+    .btn-small { padding:8px 12px; font-size:14px; }
+
+    .stats { display:grid; grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); gap:15px; margin:20px 0; }
+    .stat-card { background: rgba(15,23,42,.6); padding:15px; border-radius:8px; text-align:center; border:1px solid var(--border); }
+    .stat-number { font-size:2em; font-weight:bold; color: var(--accent); }
+    .stat-label { font-size:.9em; opacity:.8; }
+
+    .matrix { display:grid; grid-template-columns:1fr 1fr; gap:15px; margin:30px 0; }
+    .quadrant { padding:25px; border-radius:12px; cursor:pointer; transition:all .3s ease; border:2px solid transparent; position:relative; overflow:hidden; }
+    .quadrant:hover { transform: translateY(-5px); border-color:white; }
+    .quadrant-1 { background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); }
+    .quadrant-2 { background: linear-gradient(135deg, #059669 0%, #10b981 100%); }
+    .quadrant-3 { background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); }
+    .quadrant-4 { background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); }
+    .quadrant-title { font-size:1.4em; font-weight:bold; margin-bottom:8px; }
+    .quadrant-desc { font-size:.9em; opacity:.9; line-height:1.4; }
+
+    .task-input { width:100%; padding:12px; border:2px solid var(--border); border-radius:8px; background:#1e293b; color:white; font-size:16px; margin:10px 0; }
+    .task-input:focus { outline:none; border-color: var(--accent); }
+
+    .notification-permission { background: rgba(251,191,36,.1); border:1px solid var(--warn); padding:15px; border-radius:8px; margin:20px 0; text-align:center; }
+
+    .mobile-friendly { position:fixed; bottom:20px; right:20px; background: var(--accent); color:white; border:none; padding:15px; border-radius:50%; cursor:pointer; font-size:20px; box-shadow:0 4px 20px rgba(59,130,246,.4); z-index:999; }
+
+    /* PWA mode */
+    .pwa-mode { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+    .pwa-mode .container { padding-top:30px; }
+    .pwa-mode .header h1::after { content:" 📱"; opacity:.5; }
+
+    /* ===== Tasks & Calendar styles ===== */
+    .panel { background: rgba(17,24,39,.65); border:1px solid var(--border); border-radius:12px; padding:16px; }
+    .toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:10px 0 16px; }
+    .input { background:#111827; border:1px solid var(--border); color:#eef; border-radius:8px; padding:10px 12px; outline:none; }
+    .input::placeholder{ color:#64748b; }
+    .select { background:#111827; border:1px solid var(--border); color:#eef; border-radius:8px; padding:8px 10px; }
+    .list { list-style:none; display:flex; flex-direction:column; gap:10px; }
+    .task-card { background:#0b1220; border:1px solid var(--border); border-radius:10px; padding:10px; display:flex; gap:10px; align-items:flex-start; }
+    .task-title { font-weight:600; }
+    .task-meta { font-size:12px; color:#a5b4fc; display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; }
+    .pill { font-size:11px; padding:2px 8px; border:1px solid var(--border); border-radius:999px; color:#e2e8f0; }
+    .p1{ border-color:#ef4444; color:#fecaca; } .p2{ border-color:#f97316; color:#ffedd5; }
+    .p3{ border-color:#eab308; color:#fef9c3; } .p4{ border-color:#9ca3af; color:#e5e7eb; }
+
+    .cal-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+    .cal-grid { display:grid; grid-template-columns: repeat(7,1fr); gap:6px; }
+    .cal-dow { font-size:12px; color:#94a3b8; text-align:center; }
+    .cal-day { min-height:76px; background:#0b1220; border:1px solid var(--border); border-radius:8px; padding:6px; cursor:pointer; }
+    .cal-day.today { outline:2px solid var(--accent); }
+    .cal-date { font-size:12px; color:#cbd5e1; font-weight:600; margin-bottom:4px; }
+    .dots { display:flex; gap:3px; }
+    .dot { width:6px; height:6px; border-radius:999px; display:inline-block; }
+    .muted { color:#94a3b8; }
+    .grid-2-1 { display:grid; grid-template-columns: 2fr 1fr; gap:16px; }
+    @media (max-width: 900px){ .grid-2-1 { grid-template-columns: 1fr; } }
+
+    /* ===== Time tracking bits ===== */
+    .time-badge{font-size:12px;color:#93c5fd;background:#0b1220;border:1px solid var(--border);border-radius:999px;padding:2px 8px;}
+    .timer-btn{padding:6px 10px;font-size:12px;border:1px solid var(--border);border-radius:8px;background:transparent;color:#e5e7eb;}
+    .timer-btn.running{outline:2px solid var(--ok);}
+
+    /* ===== Day Planner (24h) ===== */
+    .day-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:8px 0; }
+    .day-grid { display:grid; grid-template-columns: 60px 1fr; row-gap:6px; }
+    .slot-label { font-size:12px; color:#94a3b8; text-align:right; padding-right:8px; line-height:44px; }
+    .hour-slot { min-height:44px; background:#0b1220; border:1px dashed var(--border); border-radius:8px; padding:6px; }
+    .hour-slot.over { border-color: var(--accent); background: rgba(59,130,246,.08); }
+    .sched-item { background:#111827; border:1px solid var(--border); border-radius:8px; padding:6px 8px; margin:4px 0; }
+    .task-card.draggable { cursor:grab; }
+    .task-card.draggable:active { cursor:grabbing; }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+    @media (max-width: 768px) {
+      .popup-content { margin:20px; padding:25px; }
+      .matrix { grid-template-columns:1fr; gap:10px; }
+      .controls { flex-direction:column; align-items:center; }
+      .btn { width:100%; justify-content:center; }
     }
   </style>
 </head>
 <body>
-  <div class="container" id="app">
-    <div class="top">
-      <div class="status"><span class="dot" id="dot"></span><span id="status">Online</span></div>
-      <div class="title">MBPS REI Calculator Suite — PRO</div>
-      <div class="subtitle">Wholesale • Flip/Wholetail • Apts (2nd lien + Refi) • Land (Terms) • DCR • Subject-To</div>
-      <div class="badgebar">
-        <div class="badge">Installable</div>
-        <div class="badge">Offline-Ready</div>
-        <div class="badge">Market Presets</div>
-        <div class="badge">Seller Carry</div>
-        <div class="badge">Refi Model</div>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>🎯 Focus Intervention System</h1>
+      <p>Stop doom scrolling. Get back to what matters.</p>
+
+      <div class="focus-status">
+        <div class="focus-indicator" id="focusIndicator"></div>
+        <span id="statusText">Monitoring focus...</span>
+        <div class="timer-display" id="timerDisplay">00:00</div>
+        <div class="offline-indicator" id="offlineIndicator" style="display:none;">📶 Offline</div>
       </div>
-      <div class="display">
-        <div class="kpi" id="kpi">$0</div>
-        <div class="freq" id="kpiLabel">SELECT A CALCULATOR</div>
+
+      <!-- Quick nav -->
+      <div class="controls" style="margin-top:10px;">
+        <button class="btn btn-success" onclick="startFocusSession()">🎯 Start Focus</button>
+        <button class="btn btn-warning" onclick="setFocusReminder()">⏰ Set Reminders</button>
+        <button class="btn" onclick="quickIntervention()">🚨 I'm Scrolling!</button>
+        <button class="btn btn-danger" onclick="emergencyRefocus()">💥 Emergency Refocus</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('tasksCal').scrollIntoView({behavior:'smooth'})">🗂️ Tasks</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('tasksCal').scrollIntoView({behavior:'smooth'})">🗓️ Calendar</button>
       </div>
     </div>
 
-    <div class="toolbar">
-      <div class="left row">
-        <select class="select" id="calcPicker">
-          <option value="wholesale">Wholesaling</option>
-          <option value="flip">Fix & Flip</option>
-          <option value="apts">Apartments</option>
-          <option value="land">Land</option>
-          <option value="dcr">DCR (Commercial)</option>
-          <option value="subto">Subject-To</option>
-        </select>
+    <!-- Install & Notifications -->
+    <div class="notification-permission" id="installPrompt" style="display:none;">
+      <strong>📲 Install Focus Intervention App</strong><br>
+      Get instant access to focus tools, even offline!
+      <br><br>
+      <button class="btn btn-success" onclick="installPWA()">📱 Install App</button>
+      <button class="btn" onclick="dismissInstall()">Not Now</button>
+    </div>
+
+    <div class="notification-permission" id="notificationAlert">
+      <strong>📱 Enable Notifications</strong><br>
+      Allow notifications to get focus reminders on your phone and desktop
+      <br><br>
+      <button class="btn" onclick="requestNotifications()">Enable Alerts</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats" id="todayStats">
+      <div class="stat-card">
+        <div class="stat-number" id="focusTime">0</div>
+        <div class="stat-label">Minutes Focused</div>
       </div>
-      <div class="right">
-        <select class="select" id="marketPreset">
-          <option value="custom">Market Preset: Custom</option>
-          <option value="atl">ATL Metro</option>
-          <option value="dal">DFW</option>
-          <option value="phx">Phoenix</option>
-          <option value="tpa">Tampa</option>
-          <option value="clt">Charlotte</option>
-        </select>
-        <button class="btn" id="savePreset">Save</button>
-        <button class="btn" id="loadPreset">Load</button>
+      <div class="stat-card">
+        <div class="stat-number" id="interventions">0</div>
+        <div class="stat-label">Interventions Used</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="tasksCompleted">0</div>
+        <div class="stat-label">Tasks Completed</div>
       </div>
     </div>
 
-    <div class="chips" id="chips">
-      <div class="chip active" data-value="wholesale">Wholesale</div>
-      <div class="chip" data-value="flip">Flip</div>
-      <div class="chip" data-value="apts">Apts</div>
-      <div class="chip" data-value="land">Land</div>
-      <div class="chip" data-value="dcr">DCR</div>
-      <div class="chip" data-value="subto">Sub-To</div>
+    <!-- Eisenhower Matrix -->
+    <div class="matrix">
+      <div class="quadrant quadrant-1" onclick="selectQuadrant(1)">
+        <div class="quadrant-title">🔥 DO NOW</div>
+        <div class="quadrant-desc">Urgent + Important<br>Crisis that needs immediate attention</div>
+      </div>
+      <div class="quadrant quadrant-2" onclick="selectQuadrant(2)">
+        <div class="quadrant-title">📅 SCHEDULE</div>
+        <div class="quadrant-desc">Important + Not Urgent<br>Plan time for strategic work</div>
+      </div>
+      <div class="quadrant quadrant-3" onclick="selectQuadrant(3)">
+        <div class="quadrant-title">👥 DELEGATE</div>
+        <div class="quadrant-desc">Urgent + Not Important<br>Get others to handle this</div>
+      </div>
+      <div class="quadrant quadrant-4" onclick="selectQuadrant(4)">
+        <div class="quadrant-title">🗑️ ELIMINATE</div>
+        <div class="quadrant-desc">Not Urgent + Not Important<br>Time wasters like doom scrolling</div>
+      </div>
     </div>
 
-    <div class="panel"><div class="grid" id="inputs"></div></div>
-    <div class="calculate"><button class="btn" id="calcBtn" style="width:100%">Calculate</button></div>
-    <div class="details" id="details"><div class="dgrid" id="dgrid"></div></div>
-    <div class="foot">
-      <div class="row" style="gap:10px">
-        <span class="tiny">Sensitivity:</span>
-        <input type="range" id="sensitivity" min="-15" max="15" step="1" value="0" />
-        <span class="tiny" id="sensLbl">0%</span>
+    <!-- Tasks + Calendar -->
+    <section id="tasksCal" class="panel">
+      <h2 style="margin-bottom:10px;">🗂️ Tasks & 🗓️ Calendar</h2>
+      <p class="muted" style="margin-bottom:10px;">
+        Quick Add supports <code>#project</code>, <code>@label</code>, <code>P1–P4</code>, <code>due:YYYY-MM-DD</code>, and recurrence
+        (<code>every weekday</code>, <code>every mon,wed,fri</code>, <code>every week</code>, <code>every month</code>).
+      </p>
+
+      <div class="toolbar">
+        <input id="quickAdd" class="input" style="flex:1; min-width:260px;" placeholder='Quick Add (e.g. "Call lender #Deals @followup P2 due:2025-10-01 every weekday")'>
+        <button id="addTaskBtn" class="btn btn-small">Add</button>
+        <button id="todayViewBtn" class="btn btn-small btn-ghost">Today</button>
+        <button id="upcomingViewBtn" class="btn btn-small btn-ghost">Upcoming</button>
+        <button id="projectsViewBtn" class="btn btn-small btn-ghost">Projects</button>
+        <button id="labelsViewBtn" class="btn btn-small btn-ghost">Labels</button>
       </div>
-      <div class="row">
-        <button class="btn" id="exportJson">Export</button>
-        <button class="btn" id="print">Print</button>
+
+      <div class="grid-2-1">
+        <!-- Left: list + filters -->
+        <div>
+          <div class="toolbar" style="justify-content:space-between;">
+            <div style="font-weight:600;" id="listTitle">Today</div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <select id="projectFilter" class="select"><option value="">All Projects</option></select>
+              <select id="labelFilter" class="select"><option value="">All Labels</option></select>
+              <select id="priorityFilter" class="select">
+                <option value="">All Priorities</option>
+                <option value="1">P1</option><option value="2">P2</option>
+                <option value="3">P3</option><option value="4">P4</option>
+              </select>
+            </div>
+          </div>
+          <ul id="taskList" class="list"></ul>
+          <p id="emptyState" class="muted" style="display:none;">No tasks to show.</p>
+        </div>
+
+        <!-- Right: calendar -->
+        <div>
+          <div class="cal-head">
+            <div style="display:flex; gap:8px; align-items:center;">
+              <button id="prevMonth" class="btn btn-small btn-ghost">‹</button>
+              <div id="monthLabel" style="min-width:160px; text-align:center; font-weight:600;"></div>
+              <button id="nextMonth" class="btn btn-small btn-ghost">›</button>
+            </div>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <button id="monthMode" class="btn btn-small btn-ghost">Month</button>
+              <button id="dayMode" class="btn btn-small btn-ghost">Day</button>
+              <span class="muted">Today: <span id="todayIso"></span></span>
+            </div>
+          </div>
+
+          <div id="calendarDowHeader" class="cal-grid" style="margin-bottom:6px;">
+            <div class="cal-dow">Sun</div><div class="cal-dow">Mon</div><div class="cal-dow">Tue</div>
+            <div class="cal-dow">Wed</div><div class="cal-dow">Thu</div><div class="cal-dow">Fri</div><div class="cal-dow">Sat</div>
+          </div>
+          <div id="calendarGrid" class="cal-grid"></div>
+
+          <!-- 24h Day Planner -->
+          <div id="dayPlanner" style="display:none; margin-top:8px;"></div>
+
+          <div style="margin-top:12px;">
+            <div style="font-weight:600; margin-bottom:6px;">Tasks on <span id="selectedDateLabel"></span></div>
+            <ul id="dayTaskList" class="list"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Intervention Popup -->
+  <div class="intervention-popup" id="interventionPopup">
+    <div class="popup-content">
+      <div class="intervention-title">⚠️ FOCUS BREAK!</div>
+      <div class="intervention-message" id="interventionMessage">
+        Time to stop scrolling and get back to what matters!
+      </div>
+      <input type="text" class="task-input" id="currentTask" placeholder="What should you be working on right now?">
+      <div class="controls">
+        <button class="btn btn-success" onclick="commitToTask()">✅ I'll Do This Now</button>
+        <button class="btn btn-warning" onclick="setBreakTimer()">⏳ 5 Min Break</button>
+        <button class="btn btn-danger" onclick="closeIntervention()">❌ Ignore (Bad Choice)</button>
       </div>
     </div>
   </div>
 
-  <!-- Install Prompt UI -->
-  <div class="install" id="installBar">
-    <span class="tiny">Install MBPS REI PRO?</span>
-    <button class="btn" id="installBtn">Install</button>
-    <button class="btn" id="dismissBtn" style="background:#2a2a2a;color:#ddd">Later</button>
-  </div>
+  <button class="mobile-friendly" onclick="quickIntervention()" title="Quick Focus Check">🎯</button>
 
+  <!-- ================= ORIGINAL APP SCRIPT (with quadrant quick-add toggle) ================= -->
   <script>
-    /* ---------- Online/Offline indicator ---------- */
-    function updateStatus(){ const d=document.getElementById('dot'), s=document.getElementById('status'); if(navigator.onLine){d.classList.remove('offline'); s.textContent='Online'} else {d.classList.add('offline'); s.textContent='Offline'} }
-    window.addEventListener('online',updateStatus); window.addEventListener('offline',updateStatus); updateStatus();
-
-    /* ---------- Helpers ---------- */
-    const $ = (q)=>document.querySelector(q); const $$=(q)=>Array.from(document.querySelectorAll(q));
-    const money=(n,d=0)=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:d,maximumFractionDigits:d}).format(isFinite(n)?n:0);
-    const pct=(n)=>isFinite(n)?(n*100).toFixed(2)+'%':'—';
-    const PI=(loan, r, years)=>{const m=r/12, n=years*12; return m===0?loan/n:(loan*m)/(1-Math.pow(1+m,-n));};
-    const PI_IO=(loan,r)=>loan*(r/12);
-    function field(id,label,opts={}){ const {type='number',step='1',placeholder='',value=''}=opts; return `<div><div class="label">${label}</div><input class="input" type="${type}" step="${step}" id="${id}" placeholder="${placeholder}" value="${value}"></div>`}
-    function selectField(id,label,options,init){ return `<div><div class="label">${label}</div><select id="${id}" class="select">${options.map(o=>`<option value="${o.value}" ${o.value==init?'selected':''}>${o.label}</option>`).join('')}</select></div>`}
-    function boolField(id,label,init=false){ return `<div><label class="label" style="display:flex;align-items:center;gap:8px"><input id="${id}" type="checkbox" ${init?'checked':''}/> ${label}</label></div>`}
-    const clamp=(x,min,max)=>Math.max(min,Math.min(max,x));
-
-    /* ---------- Market Presets (quick, adjustable) ---------- */
-    // These set typical ranges for taxes/insurance/rates; we only apply to visible inputs if present.
-    const MARKET = {
-      custom: {},
-      atl: { rate: 0.0725, taxesInsYr: 4200, hoaYr: 300, vacancy: 0.06, marketCap: 0.062 },
-      dal: { rate: 0.072, taxesInsYr: 5200, hoaYr: 0, vacancy: 0.07, marketCap: 0.058 },
-      phx: { rate: 0.07, taxesInsYr: 3600, hoaYr: 0, vacancy: 0.08, marketCap: 0.058 },
-      tpa: { rate: 0.072, taxesInsYr: 5200, hoaYr: 0, vacancy: 0.07, marketCap: 0.059 },
-      clt: { rate: 0.071, taxesInsYr: 3800, hoaYr: 200, vacancy: 0.06, marketCap: 0.061 }
+    let focusState = {
+      isActive: false,
+      startTime: null,
+      totalFocusTime: parseInt(localStorage.getItem('totalFocusTime') || '0'),
+      interventions: parseInt(localStorage.getItem('interventions') || '0'),
+      tasksCompleted: parseInt(localStorage.getItem('tasksCompleted') || '0'),
+      reminderInterval: null,
+      notificationsEnabled: false
     };
-    function applyMarketPreset(key){
-      const p = MARKET[key]||{};
-      const map = { rate:['rate','rate1','scRate','refiRate','refiRateA'], taxesInsYr:['taxesIns'], hoaYr:['hoa'], vacancy:['vacancy'], marketCap:['marketCap'] };
-      Object.entries(map).forEach(([k,ids])=>{
-        if(p[k]==null) return;
-        ids.forEach(id=>{
-          const el = document.getElementById(id);
-          if(el){ el.value = p[k]; }
+
+    // Toggle this to enable/disable auto task creation from the matrix.
+    const AUTO_TASK_FROM_MATRIX = true;
+
+    let deferredPrompt;
+
+    // PWA Installation
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      showInstallPrompt();
+    });
+
+    function showInstallPrompt() {
+      const installPrompt = document.getElementById('installPrompt');
+      if (installPrompt) installPrompt.style.display = 'block';
+    }
+
+    async function installPWA() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          showNotification('App Installed!', 'Focus Intervention is now available offline');
+          localStorage.setItem('install-dismissed', 'true');
+        }
+        deferredPrompt = null;
+      } else {
+        alert('To install on iOS:\n1. Tap Share\n2. "Add to Home Screen"\n\nOn Android:\n1. Menu (⋮)\n2. "Install app"');
+      }
+      dismissInstall();
+    }
+    function dismissInstall() {
+      const el = document.getElementById('installPrompt');
+      if (el) { el.style.display = 'none'; localStorage.setItem('install-dismissed','true'); }
+    }
+
+    // Dynamic manifest/icon generator (kept)
+    function generateManifest() {
+      const manifest = {
+        name: "Focus Intervention - Anti Doom Scroll",
+        short_name: "Focus Intervention",
+        description: "Stop doom scrolling and get back to what matters with the Eisenhower Matrix",
+        start_url: "./",
+        scope: "./",
+        display: "standalone",
+        background_color: "#0f172a",
+        theme_color: "#0f172a",
+        orientation: "portrait-primary",
+        categories: ["productivity", "lifestyle", "utilities"],
+        lang: "en",
+        icons: [
+          { src: generateIcon(192), sizes: "192x192", type: "image/png", purpose: "any" },
+          { src: generateIcon(192), sizes: "192x192", type: "image/png", purpose: "maskable" },
+          { src: generateIcon(512), sizes: "512x512", type: "image/png", purpose: "any" },
+          { src: generateIcon(512), sizes: "512x512", type: "image/png", purpose: "maskable" }
+        ],
+        shortcuts: [
+          { name: "Quick Focus Check", short_name: "Focus Check", description: "Immediately check if you're staying focused", url: "./?action=focus", icons: [{ src: generateIcon(96), sizes: "96x96" }] },
+          { name: "Start Focus Session", short_name: "Start Focus", description: "Begin a new focus session", url: "./?action=start", icons: [{ src: generateIcon(96), sizes: "96x96" }] }
+        ]
+      };
+      return 'data:application/json,' + encodeURIComponent(JSON.stringify(manifest));
+    }
+    function generateIcon(size) {
+      const canvas = document.createElement('canvas'); canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      const gradient = ctx.createLinearGradient(0, 0, size, size);
+      gradient.addColorStop(0, '#0f172a'); gradient.addColorStop(1, '#3b82f6');
+      ctx.fillStyle = gradient; ctx.fillRect(0, 0, size, size);
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = size * 0.05;
+      const cx=size/2, cy=size/2, r=size*0.3;
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2*Math.PI); ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx, cy, r*0.6, 0, 2*Math.PI); ctx.stroke();
+      ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(cx, cy, r*0.3, 0, 2*Math.PI); ctx.fill();
+      return canvas.toDataURL();
+    }
+
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then((registration) => {
+            console.log('SW registered: ', registration);
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  showUpdateAvailable();
+                }
+              });
+            });
+          })
+          .catch((err) => { console.log('SW registration failed: ', err); });
+
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          if (event.data && event.data.type === 'SYNC_SUCCESS') {
+            showNotification('Data Synced!', `${event.data.data} items synced to cloud`);
+          }
         });
       });
     }
+    function showUpdateAvailable() {
+      const updateBanner = document.createElement('div');
+      updateBanner.className = 'notification-permission';
+      updateBanner.id = 'updateBanner';
+      updateBanner.innerHTML = `
+        <strong>🔄 App Update Available</strong><br>
+        A new version of Focus Intervention is ready
+        <br><br>
+        <button class="btn btn-success" onclick="updateApp()">Update Now</button>
+        <button class="btn" onclick="dismissUpdate(this)">Later</button>`;
+      document.querySelector('.container').insertBefore(updateBanner, document.querySelector('.header').nextSibling);
+    }
+    function updateApp() { if (navigator.serviceWorker.controller) { navigator.serviceWorker.controller.postMessage({ type:'SKIP_WAITING' }); window.location.reload(); } }
+    function dismissUpdate(button) { button.closest('#updateBanner').remove(); }
 
-    /* ---------- Calculators ---------- */
-    const calculators = {
-      wholesale: {
-        name:'WHOLESALE',
-        inputs: () => `
-          ${selectField('exit','Exit Strategy',[{value:'assign',label:'Assignment'},{value:'double',label:'Double Close'},{value:'novation',label:'Novation'}],'assign')}
-          ${field('arv','After Repair Value (ARV)',{value:250000,step:'1000'})}
-          ${field('repairs','Repairs',{value:35000,step:'1000'})}
-          ${field('discount','Discount (× ARV)',{value:0.70,step:'0.01'})}
-          ${field('assignment','Assignment Fee',{value:10000,step:'500'})}
-          ${field('misc','Misc/Closing Cushions',{value:0,step:'500'})}
-          ${selectField('buyerRisk','Buyer Profile (Risk)',[{value:'conservative',label:'Conservative (−5%)'},{value:'standard',label:'Standard'},{value:'aggressive',label:'Aggressive (+5%)'}],'standard')}
-          ${boolField('taxes','Include Transfer/Recording (est. 0.5% ARV)',false)}
-        `,
-        compute:(v,sens=0)=>{
-          const adj=v.discount + (v.buyerRisk==='aggressive'?0.05:(v.buyerRisk==='conservative'?-0.05:0));
-          const arvAdj=v.arv*(1+sens);
-          let exitCost=0; if(v.exit==='double') exitCost=Math.max(1500,0.01*arvAdj); if(v.exit==='novation') exitCost=0.02*arvAdj;
-          const fees = v.taxes ? 0.005*arvAdj : 0;
-          const buyerPrice=arvAdj*adj - v.repairs - v.misc - exitCost - fees; const mao=buyerPrice - v.assignment;
-          return {kpi:money(mao),label:'MAO (Offer to Seller)',details:[
-            ['ARV (Adj)',money(arvAdj)],['Exit Cost ('+v.exit+')',money(exitCost)],['Govt Fees (est.)',money(fees)],
-            ['Investor Buyer Price (Target)',money(buyerPrice)],['Your Assignment Profit',money(v.assignment)],['MAO',money(mao)]
-          ]};
-        }
-      },
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      setupPWAAssets();
+      updateStats();
+      checkNotificationPermission();
 
-      flip: {
-        name:'FIX & FLIP',
-        inputs: () => `
-          <div class="grid two">
-            ${field('arv','ARV',{value:350000,step:'1000'})}
-            ${field('purchase','Purchase Price',{value:190000,step:'1000'})}
-          </div>
-          <div class="grid three">
-            ${field('repairs','Repairs',{value:50000,step:'1000'})}
-            ${field('rehabCont','Rehab Contingency (×)',{value:0.10,step:'0.01'})}
-            ${field('sellRate','Selling Costs (× ARV)',{value:0.08,step:'0.005'})}
-          </div>
-          <div class="grid three">
-            ${field('concessions','Buyer Concessions (× ARV)',{value:0.02,step:'0.005'})}
-            ${field('permits','Permits/Plans',{value:2500,step:'100'})}
-            ${field('staging','Staging',{value:1500,step:'100'})}
-          </div>
-          <div class="grid four">
-            ${field('hMonths','Holding Months',{value:6,step:'1'})}
-            ${field('hMonthly','Holding Monthly',{value:1200,step:'50'})}
-            ${field('ltv','LTV',{value:0.90,step:'0.01'})}
-            ${field('rate','Interest Rate (annual)',{value:0.12,step:'0.005'})}
-          </div>
-          <div class="grid three">
-            ${field('points','Points (origination)',{value:0.02,step:'0.005'})}
-            ${boolField('wholetail','Wholetail Exit (Light Rehab + MLS)',false)}
-            ${field('wholetailPct','Wholetail Rehab (× ARV)',{value:0.02,step:'0.005'})}
-          </div>
-          <div class="grid three">
-            ${field('partnerPref','Equity Partner Pref (annual)',{value:0.08,step:'0.005'})}
-            ${field('partnerSplit','Partner Split (post-pref, ×)',{value:0.50,step:'0.01'})}
-            ${field('yourSplit','Your Split (post-pref, ×)',{value:0.50,step:'0.01'})}
-          </div>
-        `,
-        compute:(v,sens=0)=>{
-          const arv=v.arv*(1+sens);
-          // Standard flip
-          const rehab=v.repairs*(1+v.rehabCont);
-          const selling=arv*(v.sellRate+v.concessions);
-          const loan=Math.min(v.purchase+rehab, v.purchase*v.ltv);
-          const interest=loan*v.rate*(v.hMonths/12); const points=loan*v.points; const holding=v.hMonthly*v.hMonths; const soft=v.permits+v.staging;
-          const all=v.purchase+rehab+selling+holding+interest+points+soft; const profit=arv-all; const cash=v.purchase+rehab+holding+points+interest+soft - loan;
+      const urlParams = new URLSearchParams(window.location.search);
+      const action = urlParams.get('action');
+      if (action === 'focus') setTimeout(quickIntervention, 1000);
+      else if (action === 'start') setTimeout(startFocusSession, 1000);
+      else if (action === 'emergency') setTimeout(emergencyRefocus, 500);
 
-          // Wholetail variant
-          const wtRehab = arv*(v.wholetailPct||0);
-          const wtSelling = arv*Math.max(0.06, v.sellRate*0.9); // assume ~6% MLS if wholetail
-          const wtAll = v.purchase + wtRehab + wtSelling + holding + interest + points + (soft*0.5);
-          const wtProfit = arv - wtAll;
+      // periodic focus ping
+      setInterval(() => {
+        if (focusState.notificationsEnabled) showNotification('Focus Check', 'What are you working on right now?');
+      }, 15 * 60 * 1000);
 
-          // Equity partner economics (simple pref prorated by months)
-          const pref = (v.partnerPref||0) * (v.hMonths/12) * Math.max(0,cash);
-          const postPrefProfit = (v.wholetail?wtProfit:profit) - pref;
-          const partnerTake = Math.max(0, postPrefProfit) * (v.partnerSplit||0);
-          const yourTake = (v.wholetail?wtProfit:profit) - partnerTake;
-
-          const roi=cash>0?profit/cash:NaN;
-          return {kpi:money(yourTake),label:(v.wholetail?'Wholetail':'Flip')+' — Your Net (after partner pref/split)',details:[
-            ['ARV (Adj)',money(arv)],['Rehab + Contingency',money(rehab)],['Selling + Concessions',money(selling)],
-            ['Loan Amount',money(loan)],['Interest',money(interest)],['Points',money(points)],['Holding Costs',money(holding)],['Soft Costs',money(soft)],
-            ['All-In (Flip)',money(all)],['Profit (Flip)',money(profit)],['Cash Invested',money(cash)],['ROI on Cash (Flip)',isFinite(roi)?(roi*100).toFixed(1)+'%':'—'],
-            ['Wholetail Rehab',money(wtRehab)],['Wholetail Selling',money(wtSelling)],['All-In (Wholetail)',money(wtAll)],['Profit (Wholetail)',money(wtProfit)],
-            ['Partner Pref (prorated)',money(pref)],['Partner Split',pct(v.partnerSplit||0)],['Your Split',pct(v.yourSplit||0)],
-            ['Your Net (Selected Exit)',money(yourTake)]
-          ]};
-        }
-      },
-
-      apts: {
-        name:'APARTMENTS',
-        inputs: () => `
-          ${selectField('mode','NOI Mode',[{value:'inplace',label:'In-Place'},{value:'stabilized',label:'Stabilized (Value-Add)'}],'inplace')}
-          <div class="grid four">
-            ${field('units','Units',{value:12,step:'1'})}
-            ${field('avgRent','Avg Rent/Unit (mo)',{value:1200,step:'25'})}
-            ${field('otherInc','Other Income (mo)',{value:200,step:'25'})}
-            ${field('vacancy','Vacancy (×)',{value:0.07,step:'0.005'})}
-          </div>
-          <div class="grid four">
-            ${field('opex','Operating Expenses (mo)',{value:3200,step:'50'})}
-            ${field('price','Purchase Price',{value:1600000,step:'5000'})}
-            ${field('down','Down Payment (×)',{value:0.25,step:'0.01'})}
-            ${field('rate','1st Rate (annual)',{value:0.065,step:'0.001'})}
-          </div>
-          <div class="grid four">
-            ${field('am','Amortization (yrs)',{value:30,step:'1'})}
-            ${field('marketCap','Market Cap Rate (×)',{value:0.065,step:'0.001'})}
-            ${field('capex','Value-Add CapEx',{value:200000,step:'5000'})}
-            ${field('rentUpside','Rent Upside / Unit (mo)',{value:150,step:'25'})}
-          </div>
-          <div class="grid four">
-            ${field('opexDelta','OPEX Change (mo)',{value:-300,step:'25'})}
-            ${field('leaseup','Lease-Up Months',{value:6,step:'1'})}
-            ${selectField('scEnabled','Seller Carry 2nd?',[{value:'no',label:'No'},{value:'yes',label:'Yes'}],'yes')}
-            ${field('scPct','2nd Lien (% of Price)',{value:0.10,step:'0.01'})}
-          </div>
-          <div class="grid four">
-            ${field('scRate','2nd Rate (annual)',{value:0.07,step:'0.001'})}
-            ${field('scAm','2nd Amortization (yrs)',{value:30,step:'1'})}
-            ${field('scIO','2nd Interest-Only Months',{value:0,step:'1'})}
-            ${field('scBalloon','2nd Balloon (yrs, 0=none)',{value:0,step:'1'})}
-          </div>
-          <div class="label">Refi Model (Stabilized)</div>
-          <div class="grid four">
-            ${field('refiMonths','Refi in (months)',{value:24,step:'1'})}
-            ${field('refiLTV','Refi LTV (×)',{value:0.70,step:'0.01'})}
-            ${field('refiRateA','Refi Rate (annual)',{value:0.065,step:'0.001'})}
-            ${field('refiAm','Refi Amortization (yrs)',{value:30,step:'1'})}
-          </div>
-        `,
-        compute:(v,sens=0)=>{
-          const rent=v.avgRent*(1+sens), gross=v.units*rent + v.otherInc, eff=gross*(1 - v.vacancy), noi=(eff - v.opex)*12;
-          const down=v.price*v.down, loan=v.price-down; let ads=PI(loan,v.rate,v.am)*12;
-          // Seller 2nd
-          let scAds=0, scAmt=0;
-          if (v.scEnabled==='yes'){ scAmt=(v.scPct||0)*v.price; const base = (v.scIO>0)? PI_IO(scAmt,v.scRate): PI(scAmt,v.scRate,v.scAm); scAds = base*12; }
-          const totalDebt = ads + scAds;
-          const dscr = totalDebt>0? noi/totalDebt : NaN;
-
-          // Stabilized NOI and value
-          const stRent=(v.avgRent+v.rentUpside)*(1+sens), stGross=v.units*stRent + v.otherInc, stEff=stGross*(1 - Math.max(0, v.vacancy-0.03));
-          const stNoi=(stEff - (v.opex + v.opexDelta))*12;
-          const valueAtCap=v.marketCap>0? stNoi / v.marketCap : NaN;
-          const yoc = stNoi / (v.price + v.capex);
-
-          // Refi model
-          const refiVal = valueAtCap;
-          const refiLoan = (v.refiLTV||0)*refiVal;
-          const payoff1st = loan; const payoff2nd = scAmt; const cashOut = Math.max(0, refiLoan - (payoff1st + payoff2nd));
-          const refiADS = PI(refiLoan, v.refiRateA||0, v.refiAm||30)*12;
-          const refiDSCR = refiADS>0? stNoi/refiADS : NaN;
-
-          return {kpi:money(v.mode==='stabilized'?stNoi:noi,0),label:(v.mode==='stabilized'?'Stabilized NOI':'In-Place NOI')+' — DSCR '+(isFinite(dscr)?dscr.toFixed(2):'—'),
-            details:[
-              ['In-Place NOI',money(noi,0)],['Debt Service 1st (Annual)',money(ads,0)],['Debt Service 2nd (Annual)',money(scAds,0)],
-              ['Debt Service Total (Annual)',money(totalDebt,0)],['DSCR (Total Debt)', isFinite(dscr)?dscr.toFixed(2):'—'],
-              ['Stabilized NOI',money(stNoi,0)],['Value @ Market Cap',money(valueAtCap,0)],['Yield on Cost',isFinite(yoc)?(yoc*100).toFixed(1)+'%':'—'],
-              ['Refi Value (cap)',money(refiVal,0)],['Refi Loan',money(refiLoan,0)],['Cash-Out @ Refi',money(cashOut,0)],
-              ['Refi ADS',money(refiADS,0)],['Refi DSCR',isFinite(refiDSCR)?refiDSCR.toFixed(2):'—']
-            ]};
-        }
-      },
-
-      land: {
-        name:'LAND',
-        inputs: () => `
-          <div class="grid four">
-            ${field('marketValue','Market Value (Comps)',{value:60000,step:'1000'})}
-            ${field('discount','Base Discount (×)',{value:0.25,step:'0.01'})}
-            ${field('closing','Closing Costs',{value:1500,step:'100'})}
-            ${field('marketing','Marketing Costs',{value:500,step:'50'})}
-          </div>
-          <div class="grid four">
-            ${field('profit','Desired Profit',{value:8000,step:'500'})}
-            ${field('acres','Parcel Size (acres)',{value:1.0,step:'0.1'})}
-            ${selectField('zoning','Zoning',[{value:'res',label:'Residential'},{value:'ag',label:'Agricultural'},{value:'comm',label:'Commercial'},{value:'recre',label:'Recreational'}],'res')}
-            ${field('dom','Days on Market Multiplier (×)',{value:1.0,step:'0.1'})}
-          </div>
-          ${boolField('noAccess','Limited Access / Easement Risk',false)}
-          <div class="label">Seller Terms (Optional)</div>
-          <div class="grid four">
-            ${selectField('scEnabled','Seller Carry 2nd?',[{value:'no',label:'No'},{value:'yes',label:'Yes'}],'no')}
-            ${field('scAmt','2nd Lien Amount',{value:10000,step:'500'})}
-            ${field('scRate','2nd Rate (annual)',{value:0.09,step:'0.001'})}
-            ${field('scAm','2nd Amortization (yrs)',{value:5,step:'1'})}
-          </div>
-          <div class="grid three">
-            ${field('scIO','2nd Interest-Only Months',{value:0,step:'1'})}
-            ${field('scBalloon','2nd Balloon (yrs, 0=none)',{value:0,step:'1'})}
-            ${field('dp','Down Payment (if selling on terms)',{value:3000,step:'100'})}
-          </div>
-        `,
-        compute:(v,sens=0)=>{
-          const zoningFactor={res:1.0,ag:0.9,comm:1.1,recre:0.85}[v.zoning]||1.0; const accessPenalty=v.noAccess?0.1:0;
-          const riskDisc=Math.max(0, v.discount*zoningFactor*(1 - accessPenalty))*(1 - (v.dom-1)*0.05);
-          const mv=v.marketValue*(1+sens);
-          const mao=mv*riskDisc - v.closing - v.marketing - v.profit;
-          const list=mv*riskDisc*1.25; const riskScore=clamp(70*zoningFactor - (v.dom-1)*10 - (v.noAccess?15:0) + (v.acres>5?5:0),0,100);
-
-          let scAds=0; if(v.scEnabled==='yes' && v.scAmt>0){ const base=(v.scIO>0)? PI_IO(v.scAmt,v.scRate): PI(v.scAmt,v.scRate,v.scAm); scAds=base*12; }
-
-          return {kpi:money(mao),label:'MAO (Risk-Adjusted Offer)',details:[
-            ['Market Value (Adj)',money(mv)],['Risk-Adjusted Discount',pct(riskDisc)],['Suggested List (Flip)',money(list)],
-            ['Risk Score (0-100)',Math.round(riskScore)],['Seller Carry Payment (Annual)',money(scAds)],['Buyer Down Pmt (if sold on terms)',money(v.dp||0)]
-          ]};
-        }
-      },
-
-      dcr: {
-        name:'DCR',
-        inputs: () => `
-          ${field('noi','NOI (Annual)',{value:120000,step:'5000'})}
-          ${field('loan','Loan Amount',{value:1500000,step:'10000'})}
-          ${field('rate','Interest Rate (annual)',{value:0.0675,step:'0.0005'})}
-          ${field('am','Amortization (yrs)',{value:25,step:'1'})}
-          ${field('ioMonths','Interest-Only Months',{value:12,step:'1'})}
-          ${field('balloonYrs','Balloon Term (yrs)',{value:5,step:'1'})}
-          ${field('ltv','LTV Limit (×)',{value:0.70,step:'0.01'})}
-          ${field('value','Property Value (for LTV)',{value:2000000,step:'10000'})}
-          ${field('target','Target DSCR',{value:1.25,step:'0.01'})}
-        `,
-        compute:(v,sens=0)=>{
-          const noi=v.noi*(1+sens); const ioAds=PI_IO(v.loan,v.rate)*12; const amAds=PI(v.loan,v.rate,v.am)*12; const dscrIO=ioAds>0?noi/ioAds:NaN; const dscr=amAds>0?noi/amAds:NaN;
-          function maxLoanByDSCR(target){ const adsTarget=noi/target; let lo=0,hi=1e9; for(let i=0;i<60;i++){ const mid=(lo+hi)/2; const a=PI(mid,v.rate,v.am)*12; if(a>adsTarget) hi=mid; else lo=mid; } return (lo+hi)/2; }
-          const byDSCR=maxLoanByDSCR(v.target); const byLTV=v.ltv*v.value; const lendable=Math.min(byDSCR,byLTV); const pass=(v.loan<=lendable)&&(dscr>=v.target);
-          return {kpi:isFinite(dscr)?dscr.toFixed(2):'—',label:'DSCR (Amortizing)',details:[
-            ['DSCR (Interest-Only)',isFinite(dscrIO)?dscrIO.toFixed(2):'—'],['DSCR (Amortizing)',isFinite(dscr)?dscr.toFixed(2):'—'],
-            ['Max Loan by DSCR',money(byDSCR)],['Max Loan by LTV',money(byLTV)],['Lendable (Lower of)',money(lendable)],['Pass/Fail vs Target',pass?'PASS ✅':'FAIL ❌']
-          ]};
-        }
-      },
-
-      subto: {
-        name:'SUBJECT-TO',
-        inputs: () => `
-          <div class="label">Deal & Close</div>
-          <div class="grid four">
-            ${field('price','Contract Price',{value:300000,step:'1000'})}
-            ${field('arrears','Arrears / Reinstatement',{value:5000,step:'500'})}
-            ${field('closing','Closing Costs',{value:3000,step:'250'})}
-            ${field('assignment','Your Fee / Profit at Close',{value:8000,step:'500'})}
-          </div>
-
-          <div class="label">Existing 1st (Stays in Place)</div>
-          <div class="grid four">
-            ${field('bal1','1st Loan Balance',{value:240000,step:'1000'})}
-            ${field('rate1','1st Rate (annual)',{value:0.035,step:'0.0005'})}
-            ${field('remYears1','1st Remaining Term (yrs)',{value:27,step:'1'})}
-            ${field('taxesIns','Taxes + Insurance (annual)',{value:4200,step:'100'})}
-          </div>
-          ${field('hoa','HOA (annual)',{value:0,step:'50'})}
-
-          <div class="label">Seller Carry 2nd (Optional)</div>
-          <div class="grid four">
-            ${selectField('scEnabled','Add a 2nd Lien?',[{value:'no',label:'No'},{value:'yes',label:'Yes'}],'yes')}
-            ${field('scPct','2nd as % of Price',{value:0.10,step:'0.01'})}
-            ${field('scRate','2nd Rate (annual)',{value:0.07,step:'0.001'})}
-            ${field('scAm','2nd Amortization (yrs)',{value:30,step:'1'})}
-          </div>
-          <div class="grid three">
-            ${field('scIO','2nd Interest-Only Months',{value:0,step:'1'})}
-            ${field('balloonYrs','2nd Balloon (yrs, 0=none)',{value:0,step:'1'})}
-            ${field('newMoney','Additional New Money Loan',{value:0,step:'1000'})}
-          </div>
-
-          <div class="label">Hold as Rental</div>
-          <div class="grid four">
-            ${field('rent','Gross Rent (mo)',{value:2600,step:'25'})}
-            ${field('otherInc','Other Income (mo)',{value:0,step:'10'})}
-            ${field('vacancy','Vacancy (×)',{value:0.06,step:'0.005'})}
-            ${field('opexMo','Operating Expenses (mo, excl. T&I/HOA)',{value:300,step:'25'})}
-          </div>
-
-          <div class="label">Refi Readiness (12-24 mo typical)</div>
-          <div class="grid four">
-            ${field('refiMonths','Refi in (months)',{value:18,step:'1'})}
-            ${field('refiARV','Refi Value / ARV',{value:350000,step:'1000'})}
-            ${field('refiLTV','Refi LTV (×)',{value:0.75,step:'0.01'})}
-            ${field('refiRate','Refi Rate (annual)',{value:0.065,step:'0.001'})}
-          </div>
-          ${field('refiAm','Refi Amortization (yrs)',{value:30,step:'1'})}
-        `,
-        compute:(v,sens=0)=>{
-          // Income
-          const rent = (v.rent||0)*(1+sens), gross = rent + (v.otherInc||0), eff = gross*(1 - (v.vacancy||0));
-          // 1st mortgage P&I
-          const pi1 = PI(v.bal1||0, v.rate1||0, v.remYears1||0);
-          // 2nd seller carry
-          let scAmt = 0, scPmtMo = 0; if (v.scEnabled==='yes') {
-            scAmt = (v.scPct||0) * (v.price||0);
-            const base = (v.scIO>0)? PI_IO(scAmt, v.scRate||0) : PI(scAmt, v.scRate||0, v.scAm||30);
-            scPmtMo = base;
+      // Doom scrolling heuristic — only sees this PWA; for browser-wide detection, use the extension.
+      let scrollCount = 0; let scrollTimer;
+      window.addEventListener('scroll', () => {
+        scrollCount++; clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => {
+          if (scrollCount > 10) {
+            setTimeout(() => {
+              if (typeof FOCUS_TASKS !== 'undefined' && FOCUS_TASKS.getActiveTitle) {
+                const activeTitle = FOCUS_TASKS.getActiveTitle();
+                if (activeTitle) {
+                  showIntervention(`You're in a focus session: “${activeTitle}”. Pause the scroll and get back to it?`);
+                } else {
+                  showIntervention('Rapid scrolling detected! Are you doom scrolling?');
+                }
+              } else {
+                showIntervention('Rapid scrolling detected! Are you doom scrolling?');
+              }
+            }, 2000);
           }
-          // New money
-          const newMoneyMo = v.newMoney>0 ? PI(v.newMoney, 0.11, 2) : 0; // assume 11%/2yr if used; edit as needed
+          scrollCount = 0;
+        }, 1000);
+      });
 
-          // Taxes/Insurance/HOA monthly
-          const ti = (v.taxesIns||0)/12, hoa = (v.hoa||0)/12;
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          setTimeout(() => { if (!document.hidden) showNotification('Welcome back!', 'Did you stay focused on other tabs?'); }, 5000);
+        }
+      });
 
-          // Totals
-          const monthlyDebt = pi1 + scPmtMo + newMoneyMo + ti + hoa;
-          const opex = (v.opexMo||0);
-          const noiMo = eff - opex - ti - hoa; // NOI before debt service
-          const noiYr = noiMo*12, ads = monthlyDebt*12, dscr = ads>0 ? (noiYr/ads) : NaN;
+      // Bootstrap Tasks/Calendar
+      FOCUS_TASKS.bootstrap();
+    });
 
-          // Cash to close: financed by staying 1st + new 2nd (+ optional new money)
-          const price = v.price||0; const financed = (v.bal1||0) + scAmt + (v.newMoney||0);
-          const downAtClose = Math.max(0, price - financed);
-          const cashToClose = downAtClose + (v.arrears||0) + (v.closing||0) + (v.assignment||0);
-          const coc = cashToClose>0 ? ( (noiYr - ads) / cashToClose ) : NaN;
+    function setupPWAAssets() {
+      window.addEventListener('online', () => {
+        document.getElementById('offlineIndicator').style.display = 'none';
+        showNotification('Back Online!', 'Focus data will sync now');
+        if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
+          navigator.serviceWorker.ready.then((registration) => registration.sync.register('focus-data-sync'));
+        }
+      });
+      window.addEventListener('offline', () => { document.getElementById('offlineIndicator').style.display = 'block'; });
 
-          // Refi readiness
-          const refiVal = (v.refiARV||0)*(1+sens), refiLoan = (v.refiLTV||0)*refiVal;
-          const payoff1st = v.bal1||0, payoff2nd = scAmt + 0, payoffNew = v.newMoney||0;
-          const cashOut = Math.max(0, refiLoan - (payoff1st + payoff2nd + payoffNew));
-          const refiADS = PI(refiLoan, v.refiRate||0, v.refiAm||30)*12;
-          const refiDSCR = refiADS>0? (noiYr/refiADS) : NaN;
+      if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+        document.body.classList.add('pwa-mode');
+        const ip = document.getElementById('installPrompt'); if (ip) ip.style.display='none';
+      } else {
+        setTimeout(() => { if (!localStorage.getItem('install-dismissed')) showInstallPrompt(); }, 5000);
+      }
+    }
 
-          return {
-            kpi: isFinite(dscr)?dscr.toFixed(2):'—',
-            label: 'DSCR (Total Debt)',
-            details: [
-              ['Gross Rent (Adj, mo)', money(rent)],
-              ['Effective Income (mo)', money(eff)],
-              ['OPEX (mo, excl. T&I/HOA)', money(opex)],
-              ['Taxes+Ins (mo)', money(ti)],
-              ['HOA (mo)', money(hoa)],
-              ['NOI (Annual)', money(noiYr,0)],
-              ['1st P&I (mo)', money(pi1)],
-              ['2nd Payment (mo)', money(scPmtMo)],
-              ['New Money (mo)', money(newMoneyMo)],
-              ['Debt+Escrows (mo)', money(monthlyDebt)],
-              ['Debt Service (Annual)', money(ads,0)],
-              ['DSCR', isFinite(dscr)?dscr.toFixed(2):'—'],
-              ['Financed (1st + 2nd + new $)', money(financed)],
-              ['Cash to Close (est.)', money(cashToClose)],
-              ['Cash-on-Cash (Yr1)', isFinite(coc)?(coc*100).toFixed(1)+'%':'—'],
-              ['Refi Value', money(refiVal,0)],
-              ['Refi Loan', money(refiLoan,0)],
-              ['Refi ADS', money(refiADS,0)],
-              ['Refi DSCR', isFinite(refiDSCR)?refiDSCR.toFixed(2):'—'],
-              ['Cash-Out @ Refi (after payoffs)', money(cashOut,0)]
-            ]
-          };
+    // Notifications
+    async function requestNotifications() {
+      if ('Notification' in window) {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          focusState.notificationsEnabled = true;
+          const n = document.getElementById('notificationAlert'); if (n) n.style.display='none';
+          showNotification('Focus System Activated!', "You'll now get focus reminders");
         }
       }
-    };
-
-    /* ---------- State/UI wiring ---------- */
-    let active='wholesale'; const inputsDiv=$('#inputs'), dgrid=$('#dgrid');
-    function render(){ inputsDiv.innerHTML=calculators[active].inputs(); $('#kpi').textContent='$0'; $('#kpiLabel').textContent=calculators[active].name; dgrid.innerHTML=''; $('#details').style.display='none'; }
-    function values(){ const v={}; inputsDiv.querySelectorAll('input,select').forEach(el=>{ const id=el.id; if(el.type==='checkbox'){ v[id]=el.checked; } else if(el.tagName==='SELECT'){ v[id]=el.value; } else { v[id]=parseFloat(el.value||'0'); } }); return v; }
-    function calculate(){ const sens=(parseFloat($('#sensitivity').value)||0)/100; const res=calculators[active].compute(values(), sens); $('#kpi').textContent=res.kpi; $('#kpiLabel').textContent=calculators[active].name+' — '+res.label; dgrid.innerHTML=res.details.map(([a,b])=>`<div class="drow"><div class="dlabel">${a}</div><div class="dval">${b}</div></div>`).join(''); $('#details').style.display='block'; saveLast(); }
-
-    // Picker + chips
-    $('#calcPicker').addEventListener('change',(e)=>{ active=e.target.value; setChip(active); render(); });
-    $('#chips').addEventListener('click',(e)=>{ const ch=e.target.closest('.chip'); if(!ch) return; active=ch.dataset.value; $('#calcPicker').value=active; setChip(active); render(); });
-    function setChip(val){ $$('#chips .chip').forEach(c=>c.classList.toggle('active', c.dataset.value===val)); }
-
-    // Market presets
-    $('#marketPreset').addEventListener('change',(e)=> applyMarketPreset(e.target.value));
-
-    // Main actions
-    $('#calcBtn').addEventListener('click',calculate);
-    $('#sensitivity').addEventListener('input',()=>{ $('#sensLbl').textContent=(parseFloat($('#sensitivity').value)||0)+'%'; });
-
-    // Presets
-    const KEY='mbps_rei_pro_presets_v2'; const LAST='mbps_rei_pro_last_v2';
-    function savePreset(){ const name=prompt('Preset name?'); if(!name) return; const data={active, values: values()}; const store=JSON.parse(localStorage.getItem(KEY)||'{}'); store[name]=data; localStorage.setItem(KEY, JSON.stringify(store)); alert('Saved preset: '+name); }
-    function loadPreset(){ const store=JSON.parse(localStorage.getItem(KEY)||'{}'); const names=Object.keys(store); if(!names.length){ alert('No presets saved yet.'); return;} const name=prompt('Type preset name to load:\n'+names.join(', ')); if(!name||!store[name]) return; const data=store[name]; active=data.active; $('#calcPicker').value=active; setChip(active); render(); const v=data.values; Object.keys(v).forEach(k=>{ const el=document.getElementById(k); if(!el) return; if(el.type==='checkbox') el.checked=!!v[k]; else el.value=v[k]; }); }
-    function saveLast(){ localStorage.setItem(LAST, JSON.stringify({active, values: values()})); }
-    function restoreLast(){ const obj=JSON.parse(localStorage.getItem(LAST)||'null'); if(!obj) return; active=obj.active||active; $('#calcPicker').value=active; setChip(active); render(); const v=obj.values||{}; Object.keys(v).forEach(k=>{ const el=document.getElementById(k); if(!el) return; if(el.type==='checkbox') el.checked=!!v[k]; else el.value=v[k]; }); }
-    $('#savePreset').addEventListener('click',savePreset); $('#loadPreset').addEventListener('click',loadPreset);
-
-    // Export / Print
-    $('#exportJson').addEventListener('click',()=>{ const blob=new Blob([JSON.stringify({active, values: values()}, null, 2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='mbps-rei-scenario.json'; a.click(); URL.revokeObjectURL(a.href); });
-    $('#print').addEventListener('click',()=>window.print());
-
-    // Init
-    render(); restoreLast();
-
-    /* ---------- PWA: SW + Install (project subpath) ---------- */
-    if('serviceWorker' in navigator){
-      window.addEventListener('load',()=>{
-        navigator.serviceWorker.register('/mbs-rei-pro/service-worker.js').catch(()=>{});
-      });
     }
-    const INSTALL_KEY = 'mbps_rei_pro_installed_or_prompted';
-    let deferredPrompt=null; const installBar=$('#installBar'); const installBtn=$('#installBtn'); const dismissBtn=$('#dismissBtn');
-    window.addEventListener('beforeinstallprompt',(e)=>{
-      if(localStorage.getItem(INSTALL_KEY)) return; // prompt once
-      e.preventDefault(); deferredPrompt=e; installBar.style.display='flex';
+    function checkNotificationPermission() {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        focusState.notificationsEnabled = true;
+        const n = document.getElementById('notificationAlert'); if (n) n.style.display='none';
+      }
+    }
+    function showNotification(title, body) {
+      if (focusState.notificationsEnabled) {
+        new Notification(title, {
+          body,
+          icon:'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHJ4PSIxNiIgZmlsbD0iIzNiODJmNiIvPjxzdmcgeD0iMTYiIHk9IjE2IiB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiLz48cGF0aCBkPSJNMTIgMVYzTTEyIDIxVjJNNC4yMiA0LjIybDEuNDIgMS40Mk0xOC4zNiAxOC4zNmwxLjQyIDEuNDJNMTEgMTJIM00yMSAxMmgyTTQuMjIgMTkuNzhsMS40Mi0xLjQyTTE4LjM2IDUuNjRsMS40Mi0xLjQyIi8+PC9zdmc+PC9zdmc+',
+          tag:'focus-reminder', requireInteraction:true
+        });
+      }
+    }
+
+    // Focus session
+    function startFocusSession() {
+      focusState.isActive = true; focusState.startTime = Date.now();
+      document.getElementById('focusIndicator').classList.add('active');
+      document.getElementById('statusText').textContent = 'Focus session active';
+      updateTimer(); showNotification('Focus Session Started!', 'Time to get things done 🎯');
+    }
+    function setFocusReminder() {
+      const minutes = prompt('Remind me every how many minutes? (default: 15)', '15');
+      if (minutes) {
+        clearInterval(focusState.reminderInterval);
+        focusState.reminderInterval = setInterval(() => { showIntervention(`Focus check! It's been ${minutes} minutes.`); }, parseInt(minutes)*60*1000);
+        showNotification('Reminders Set!', `You'll get focus checks every ${minutes} minutes`);
+      }
+    }
+    function quickIntervention() {
+      const messages = [
+        'What should you be working on right now?','Are you being productive or just busy?','Is this the most important thing you could be doing?',
+        'Stop scrolling. Start doing.','Your goals won\'t achieve themselves!','Focus time! What\'s the ONE thing that matters most?'
+      ];
+      const msg = messages[Math.floor(Math.random()*messages.length)];
+      showIntervention(msg); focusState.interventions++; updateStats(); saveStats();
+    }
+    function emergencyRefocus() { showIntervention('🚨 EMERGENCY REFOCUS! Drop everything and focus on what matters most right NOW!'); focusState.interventions++; updateStats(); saveStats(); }
+    function showIntervention(m) { document.getElementById('interventionMessage').textContent = m; document.getElementById('interventionPopup').style.display='flex'; document.getElementById('currentTask').focus(); }
+
+    // Quadrant handler with optional auto task creation + timer start
+    function selectQuadrant(q) {
+      const names=['','DO NOW','SCHEDULE','DELEGATE','ELIMINATE'];
+      const messages=[
+        '',
+        'This is urgent AND important - handle it immediately!',
+        'This is important but not urgent - schedule dedicated time for it.',
+        'This is urgent but not important for you - find someone else to handle it.',
+        'This is neither urgent nor important - eliminate or minimize this activity!'
+      ];
+      showIntervention(`${names[q]}: ${messages[q]}`);
+
+      if (!AUTO_TASK_FROM_MATRIX || typeof FOCUS_TASKS === 'undefined' || !FOCUS_TASKS.quickAddAndStart) return;
+
+      const title = prompt(`Name the task for "${names[q]}" (or leave blank to skip):`, '');
+      if (!title) return;
+
+      const todayISO = new Date().toISOString().slice(0,10);
+      const plusDays = (n)=>{ const d = new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); };
+
+      if (q===1){ // DO NOW
+        FOCUS_TASKS.quickAddAndStart(title, { projects:['DoNow'], labels:['q1','focus'], priority:1, due: todayISO });
+      } else if (q===2){ // SCHEDULE
+        FOCUS_TASKS.quickAddAndStart(title, { projects:['Schedule'], labels:['q2','plan'], priority:2, due: plusDays(1) });
+      } else if (q===3){ // DELEGATE
+        FOCUS_TASKS.quickAddAndStart(title, { projects:['Delegate'], labels:['q3','handoff'], priority:3, due: plusDays(1) });
+      } else if (q===4){ // ELIMINATE
+        FOCUS_TASKS.quickAddAndStart('Eliminate: ' + title, { projects:['Eliminate'], labels:['q4','cut'], priority:4, due: todayISO });
+      }
+    }
+
+    function commitToTask() {
+      const task = document.getElementById('currentTask').value.trim();
+      if (task) {
+        focusState.tasksCompleted++; startFocusSession(); closeIntervention();
+        showNotification('Task Committed!', `Working on: ${task}`); updateStats(); saveStats();
+      } else alert('Please enter what you\'ll work on!');
+    }
+    function setBreakTimer() {
+      closeIntervention(); showNotification('5 Minute Break', 'Rest up, then get back to work!');
+      setTimeout(() => { showIntervention('Break\'s over! Time to get back to productive work!'); }, 5*60*1000);
+    }
+    function closeIntervention() { document.getElementById('interventionPopup').style.display='none'; document.getElementById('currentTask').value=''; }
+    function updateTimer() {
+      if (focusState.isActive && focusState.startTime) {
+        const elapsed = Math.floor((Date.now() - focusState.startTime)/1000);
+        const m = Math.floor(elapsed/60), s = elapsed%60;
+        document.getElementById('timerDisplay').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        if (elapsed>0 && elapsed%60===0) { focusState.totalFocusTime++; updateStats(); saveStats(); }
+        requestAnimationFrame(updateTimer);
+      }
+    }
+    function updateStats() {
+      document.getElementById('focusTime').textContent = focusState.totalFocusTime;
+      document.getElementById('interventions').textContent = focusState.interventions;
+      document.getElementById('tasksCompleted').textContent = focusState.tasksCompleted;
+    }
+    function saveStats() {
+      localStorage.setItem('totalFocusTime', String(focusState.totalFocusTime));
+      localStorage.setItem('interventions', String(focusState.interventions));
+      localStorage.setItem('tasksCompleted', String(focusState.tasksCompleted));
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key==='i'){ e.preventDefault(); quickIntervention(); }
+        if (e.key==='f'){ e.preventDefault(); startFocusSession(); }
+      }
+      if (e.key === 'Escape') closeIntervention();
     });
-    installBtn.addEventListener('click', async ()=>{
-      if(!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      localStorage.setItem(INSTALL_KEY,'1');
-      deferredPrompt=null; installBar.style.display='none';
-    });
-    dismissBtn.addEventListener('click',()=>{ localStorage.setItem(INSTALL_KEY,'1'); installBar.style.display='none'; });
+  </script>
+
+  <!-- ============ Tasks + Calendar + Time Tracking + 24h Day Planner ============ -->
+  <script>
+    const FOCUS_TASKS = (() => {
+      const TASKS_KEY = 'mbps_focus_tasks_v1';
+      const META_KEY  = 'mbps_focus_meta_v1';
+      const ACTIVE_TIMER_KEY = 'mbps_focus_active_timer_v1';
+
+      const nowISO = () => new Date().toISOString().slice(0,10);
+      const uid = ()=>'t_'+Math.random().toString(36).slice(2,9);
+      const PRIORITIES = {1:'P1',2:'P2',3:'P3',4:'P4'};
+      const weekdayIdx = { sun:0, mon:1, tue:2, wed:3, thu:4, fri:5, sat:6 };
+
+      const db = {
+        load: ()=>JSON.parse(localStorage.getItem(TASKS_KEY)||'[]'),
+        save: (t)=>{ localStorage.setItem(TASKS_KEY, JSON.stringify(t)); render(); },
+        loadMeta: ()=>JSON.parse(localStorage.getItem(META_KEY)||'{"projects":[],"labels":[]}'),
+        saveMeta: (m)=>localStorage.setItem(META_KEY, JSON.stringify(m))
+      };
+
+      // Active per-task timer
+      const ACTIVE_TIMER = {
+        taskId: null, startedAt: null, tickHandle: null,
+        load(){ const raw = JSON.parse(localStorage.getItem(ACTIVE_TIMER_KEY)||'null'); if(raw&&raw.taskId&&raw.startedAt){ this.taskId=raw.taskId; this.startedAt=raw.startedAt; } },
+        save(){ localStorage.setItem(ACTIVE_TIMER_KEY, JSON.stringify({taskId:this.taskId, startedAt:this.startedAt})); },
+        liveSeconds(){ return this.startedAt ? (Date.now() - new Date(this.startedAt).getTime())/1000 : 0; },
+        start(taskId){ if(this.taskId) this.stop(); this.taskId=taskId; this.startedAt=new Date().toISOString(); this.save(); this._startTicker(); },
+        stop(){
+          if(!this.taskId || !this.startedAt) return;
+          const tasks = db.load(); const t = tasks.find(x=>x.id===this.taskId);
+          if(t){ t.timeLogs = Array.isArray(t.timeLogs)?t.timeLogs:[]; t.timeLogs.push({ start:this.startedAt, end:new Date().toISOString() }); db.save(tasks); }
+          this.taskId=null; this.startedAt=null; this.save(); this._stopTicker();
+        },
+        _startTicker(){
+          this._stopTicker();
+          this.tickHandle = setInterval(()=>{
+            const el = document.querySelector(`.time-badge[data-time="${this.taskId}"]`);
+            if(el){
+              const tasks = db.load(); const t = tasks.find(x=>x.id===this.taskId);
+              const secs = (t? totalSeconds(t):0) + this.liveSeconds();
+              el.textContent = '⏱ ' + fmtHM(secs);
+            }
+          },1000);
+        },
+        _stopTicker(){ if(this.tickHandle){ clearInterval(this.tickHandle); this.tickHandle=null; } }
+      };
+      ACTIVE_TIMER.load(); if (ACTIVE_TIMER.taskId && ACTIVE_TIMER.startedAt) ACTIVE_TIMER._startTicker();
+
+      // Parser
+      function parseQuickAdd(input){
+        const parts = input.trim().split(/\s+/);
+        const labels=new Set(), projects=new Set(); let priority=3, titleParts=[], due=null, recur=null;
+        let i=0;
+        while(i<parts.length){
+          const w=parts[i];
+          if(/^#/.test(w)&&w.length>1){ projects.add(w.slice(1)); i++; continue; }
+          if(/^@/.test(w)&&w.length>1){ labels.add(w.slice(1)); i++; continue; }
+          if(/^P[1-4]$/i.test(w)){ priority = Number(w[1]); i++; continue; }
+          if(/^due:\d{4}-\d{2}-\d{2}$/i.test(w)){ due = w.split(':')[1]; i++; continue; }
+          if(w.toLowerCase()==='every'){
+            const rest = parts.slice(i+1).join(' ').toLowerCase();
+            const m = rest.match(/^(weekday|day|week|month|mon|tue|wed|thu|fri|sat|sun|(?:mon|tue|wed|thu|fri|sat|sun)(?:,\s*(?:mon|tue|wed|thu|fri|sat|sun))*)/);
+            if(m){ recur = m[0].replace(/\s+/g,''); const consumed = m[0].split(/\s+/).length + 1; i+=consumed; continue; }
+          }
+          titleParts.push(w); i++;
+        }
+        return { title:titleParts.join(' ').trim()||'Untitled', projects:[...projects], labels:[...labels], priority, due, recur };
+      }
+
+      // Recurrence
+      function nextDateForRule(fromISO, rule){
+        if(!rule) return null;
+        const d = new Date(fromISO+'T00:00:00'); const addDays=n=>d.setDate(d.getDate()+n);
+        if(rule==='day'){ addDays(1); }
+        else if(rule==='week'){ addDays(7); }
+        else if(rule==='month'){ d.setMonth(d.getMonth()+1); }
+        else if(rule==='weekday'){ do{ addDays(1);} while([0,6].includes(d.getDay())); }
+        else if(rule.includes(',')){ const set=rule.split(',').map(s=>s.trim()).map(x=>weekdayIdx[x]).filter(x=>x!=null);
+          for(let n=1;n<8;n++){ const p=new Date(fromISO+'T00:00:00'); p.setDate(p.getDate()+n); if(set.includes(p.getDay())){ addDays(n); break; } }
+        } else if(weekdayIdx.hasOwnProperty(rule)){ const target=weekdayIdx[rule];
+          for(let n=1;n<8;n++){ const p=new Date(fromISO+'T00:00:00'); p.setDate(p.getDate()+n); if(p.getDay()===target){ addDays(n); break; } }
+        } else return null;
+        return d.toISOString().slice(0,10);
+      }
+
+      // Time utils & card HTML
+      function totalSeconds(t){
+        const logs = Array.isArray(t.timeLogs)?t.timeLogs:[];
+        return logs.reduce((s,L)=>s+(L.end? (new Date(L.end)-new Date(L.start))/1000 : 0),0);
+      }
+      function fmtHM(sec){
+        sec = Math.max(0, Math.floor(sec)); const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60);
+        return (h>0? `${h}h ` : '') + `${m}m`;
+      }
+      function pillCls(p){ return 'pill '+(p===1?'p1':p===2?'p2':p===3?'p3':'p4'); }
+      function itemHTML(t){
+        const dueTxt=t.due?`Due ${t.due}`:'No due', recurTxt=t.recur?` • every ${t.recur}`:'';
+        const proj=t.projects.map(p=>`<span class="pill">${p}</span>`).join(' ');
+        const lab =t.labels.map(l=>`<span class="pill">${l}</span>`).join(' ');
+        const secs = totalSeconds(t) + (ACTIVE_TIMER.taskId===t.id ? ACTIVE_TIMER.liveSeconds() : 0);
+        const timeStr = fmtHM(secs);
+
+        return `<li class="task-card draggable" draggable="true" data-id="${t.id}">
+          <input type="checkbox" class="mt-1 task-done" ${t.completedAt?'checked':''} />
+          <div style="flex:1;">
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              <span class="task-title">${t.title}</span>
+              <span class="${pillCls(t.priority)}">${PRIORITIES[t.priority]}</span>
+              <span class="time-badge" data-time="${t.id}">⏱ ${timeStr}</span>
+            </div>
+            <div class="task-meta"><span>${dueTxt}${recurTxt}</span> ${proj} ${lab}</div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px; min-width:120px;">
+            <button class="timer-btn startstop-btn ${ACTIVE_TIMER.taskId===t.id?'running':''}">
+              ${ACTIVE_TIMER.taskId===t.id?'■ Stop':'▶ Start'}
+            </button>
+            <button class="timer-btn add15-btn">+15m</button>
+            <button class="btn btn-small btn-ghost resched-btn">Reschedule</button>
+            <button class="btn btn-small btn-ghost del-btn">Delete</button>
+          </div>
+        </li>`;
+      }
+
+      // Day planner helpers
+      function isoAtHour(dateISO, hour){ return `${dateISO}T${String(hour).padStart(2,'0')}:00:00`; }
+      function scheduleExisting(id, dateISO, hour, dur=60){
+        const tasks = db.load(); const t = tasks.find(x=>x.id===id); if(!t) return;
+        const start = new Date(isoAtHour(dateISO, hour));
+        const end = new Date(start.getTime() + dur*60000);
+        t.start = start.toISOString(); t.end = end.toISOString(); t.due = dateISO;
+        db.save(tasks);
+      }
+      function scheduleNew(title, dateISO, hour, dur=60, priority=3){
+        const tasks = db.load();
+        const start = new Date(isoAtHour(dateISO, hour));
+        const end = new Date(start.getTime() + dur*60000);
+        const t={ id:uid(), title, projects:['Schedule'], labels:['calendar'], priority,
+                  due:dateISO, recur:null, createdAt:new Date().toISOString(),
+                  completedAt:null, timeLogs:[], start:start.toISOString(), end:end.toISOString() };
+        tasks.push(t); db.save(tasks);
+      }
+      function durationMinutes(t){
+        if(!t.start || !t.end) return 0;
+        return Math.max(0, Math.round((new Date(t.end)-new Date(t.start))/60000));
+      }
+
+      // State/DOM
+      let state = { view:'today', selectedDate: nowISO(), selectedProject:'', selectedLabel:'', priority:'', calMode:'month' };
+      const $ = s=>document.querySelector(s);
+
+      const quickAdd = $('#quickAdd'), addTaskBtn=$('#addTaskBtn');
+      const taskList = $('#taskList'), emptyState=$('#emptyState'), listTitle=$('#listTitle');
+      const projectFilter=$('#projectFilter'), labelFilter=$('#labelFilter'), priorityFilter=$('#priorityFilter');
+
+      const monthLabel=$('#monthLabel'), calendarGrid=$('#calendarGrid'), todayIso=$('#todayIso');
+      const calendarDowHeader=$('#calendarDowHeader');
+      const selectedDateLabel=$('#selectedDateLabel'), dayTaskList=$('#dayTaskList');
+      const monthMode = $('#monthMode'), dayMode = $('#dayMode');
+      const dayPlanner = $('#dayPlanner');
+
+      // View buttons
+      $('#todayViewBtn').onclick    = ()=>{ state.view='today'; render(); };
+      $('#upcomingViewBtn').onclick = ()=>{ state.view='upcoming'; render(); };
+      $('#projectsViewBtn').onclick = ()=>{ state.view='projects'; render(); };
+      $('#labelsViewBtn').onclick   = ()=>{ state.view='labels'; render(); };
+
+      // Add task
+      addTaskBtn.onclick = ()=>{
+        const p = parseQuickAdd(quickAdd.value); if(!p.title) return;
+        const tasks = db.load();
+        const t = { id:uid(), title:p.title, projects:p.projects, labels:p.labels, priority:p.priority,
+                    due:p.due||null, recur:p.recur||null, createdAt:new Date().toISOString(), completedAt:null, timeLogs:[] };
+        tasks.push(t); db.save(tasks);
+        const meta=db.loadMeta(); p.projects.forEach(x=>{ if(!meta.projects.includes(x)) meta.projects.push(x); }); p.labels.forEach(x=>{ if(!meta.labels.includes(x)) meta.labels.push(x); }); db.saveMeta(meta);
+        quickAdd.value='';
+      };
+
+      // Filters
+      projectFilter.onchange = ()=>{ state.selectedProject=projectFilter.value; renderListOnly(); };
+      labelFilter.onchange   = ()=>{ state.selectedLabel=labelFilter.value; renderListOnly(); };
+      priorityFilter.onchange= ()=>{ state.priority=priorityFilter.value; renderListOnly(); };
+
+      function taskMatchesFilters(t){
+        if(state.selectedProject && !t.projects.includes(state.selectedProject)) return false;
+        if(state.selectedLabel && !t.labels.includes(state.selectedLabel)) return false;
+        if(state.priority && String(t.priority)!==state.priority) return false;
+        return true;
+      }
+      const isUpcoming = iso => iso && iso > nowISO();
+
+      function tasksForView(tasks){
+        if(state.view==='today'){ listTitle.textContent='Today'; return tasks.filter(t=>!t.completedAt && (t.due ? t.due <= nowISO() : true)).filter(taskMatchesFilters); }
+        if(state.view==='upcoming'){ listTitle.textContent='Upcoming'; return tasks.filter(t=>!t.completedAt && isUpcoming(t.due)).filter(taskMatchesFilters).sort((a,b)=>(a.due||'9999')<(b.due||'9999')?-1:1); }
+        if(state.view==='projects'){ listTitle.textContent= state.selectedProject?`Project: ${state.selectedProject}`:'All Projects'; return tasks.filter(t=>!t.completedAt).filter(taskMatchesFilters); }
+        if(state.view==='labels'){ listTitle.textContent= state.selectedLabel?`Label: ${state.selectedLabel}`:'All Labels'; return tasks.filter(t=>!t.completedAt).filter(taskMatchesFilters); }
+        if(state.view==='calendar'){ listTitle.textContent='Calendar (All Tasks)'; return tasks.filter(taskMatchesFilters); }
+        return tasks;
+      }
+
+      function renderListOnly(){
+        const tasks = db.load();
+        const items = tasksForView(tasks);
+        taskList.innerHTML = items.map(itemHTML).join('');
+        emptyState.style.display = items.length? 'none':'block';
+
+        // Done toggle
+        taskList.querySelectorAll('.task-done').forEach(cb=>{
+          cb.onchange = (e)=>{
+            const id = e.target.closest('li').dataset.id;
+            const tasks = db.load(); const t = tasks.find(x=>x.id===id); if(!t) return;
+            if(e.target.checked){
+              t.completedAt = new Date().toISOString();
+              if(t.recur && t.due){
+                const next = nextDateForRule(t.due, t.recur);
+                if(next) tasks.push({...t, id:uid(), completedAt:null, due:next, createdAt:new Date().toISOString(), timeLogs:[], start:undefined, end:undefined});
+              }
+              if (ACTIVE_TIMER.taskId === id) ACTIVE_TIMER.stop();
+            } else { t.completedAt=null; }
+            db.save(tasks);
+          };
+        });
+
+        // Delete
+        taskList.querySelectorAll('.del-btn').forEach(b=>{
+          b.onclick = ()=>{
+            const id = b.closest('li').dataset.id;
+            if (ACTIVE_TIMER.taskId === id) ACTIVE_TIMER.stop();
+            const tasks = db.load().filter(x=>x.id!==id);
+            db.save(tasks);
+          };
+        });
+
+        // Reschedule (date)
+        taskList.querySelectorAll('.resched-btn').forEach(b=>{
+          b.onclick = ()=>{
+            const id = b.closest('li').dataset.id;
+            const iso = prompt('New due date (YYYY-MM-DD):', ''); if(!iso) return;
+            const tasks = db.load(); const t=tasks.find(x=>x.id===id);
+            if(t){ t.due=iso; db.save(tasks); }
+          };
+        });
+
+        // Start/Stop per-task timer
+        taskList.querySelectorAll('.startstop-btn').forEach(btn=>{
+          btn.onclick = ()=>{
+            const id = btn.closest('li').dataset.id;
+            if (ACTIVE_TIMER.taskId === id) ACTIVE_TIMER.stop(); else ACTIVE_TIMER.start(id);
+            renderListOnly();
+          };
+        });
+
+        // +15m quick log
+        taskList.querySelectorAll('.add15-btn').forEach(btn=>{
+          btn.onclick = ()=>{
+            const id = btn.closest('li').dataset.id;
+            const tasks = db.load(); const t = tasks.find(x=>x.id===id); if(!t) return;
+            t.timeLogs = Array.isArray(t.timeLogs)?t.timeLogs:[];
+            const end = new Date(); const start = new Date(end.getTime() - 15*60*1000);
+            t.timeLogs.push({ start:start.toISOString(), end:end.toISOString() });
+            db.save(tasks);
+          };
+        });
+
+        // Make list items draggable into day planner
+        taskList.querySelectorAll('.task-card.draggable').forEach(li=>{
+          li.addEventListener('dragstart', e=>{
+            e.dataTransfer.setData('text/plain', li.dataset.id);
+          });
+        });
+      }
+
+      // Calendar & Day Planner
+      let calYear, calMonth;
+      function monthName(y,m){ return new Date(y,m,1).toLocaleString(undefined,{month:'long',year:'numeric'}); }
+
+      function renderCalendar(){
+        monthLabel.textContent = state.calMode==='month'
+          ? monthName(calYear, calMonth)
+          : `Plan for ${state.selectedDate}`;
+
+        todayIso.textContent = nowISO();
+
+        // Toggle month grid / day planner visibility
+        const showMonth = state.calMode==='month';
+        calendarGrid.style.display   = showMonth ? 'grid' : 'none';
+        calendarDowHeader.style.display = showMonth ? 'grid' : 'none';
+        dayPlanner.style.display     = showMonth ? 'none' : 'block';
+
+        calendarGrid.innerHTML = '';
+
+        if (showMonth){
+          const first = new Date(calYear, calMonth, 1);
+          const startIdx = first.getDay();
+          const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+
+          const tasks = db.load();
+          const byDate = tasks.reduce((m,t)=>{ if(t.due){ (m[t.due]=m[t.due]||[]).push(t);} return m; },{});
+
+          for(let i=0;i<startIdx;i++){
+            const blank=document.createElement('div'); blank.className='cal-day'; blank.style.opacity='.2';
+            calendarGrid.appendChild(blank);
+          }
+          for(let d=1; d<=daysInMonth; d++){
+            const iso=new Date(calYear, calMonth, d).toISOString().slice(0,10);
+            const cell=document.createElement('div'); cell.className='cal-day';
+            if(iso===nowISO()) cell.classList.add('today');
+
+            const top=document.createElement('div'); top.className='cal-date'; top.textContent=String(d);
+            cell.appendChild(top);
+
+            const dots=document.createElement('div'); dots.className='dots';
+            (byDate[iso]||[]).slice(0,6).forEach(t=>{
+              const dot=document.createElement('span'); dot.className='dot';
+              dot.style.background = ({1:'#ef4444',2:'#f97316',3:'#eab308',4:'#9ca3af'})[t.priority]||'#9ca3af';
+              dots.appendChild(dot);
+            });
+            cell.appendChild(dots);
+
+            // Click a day to switch to Day mode for that date
+            cell.onclick = ()=>{
+              state.selectedDate=iso; selectedDateLabel.textContent=iso;
+              state.view='calendar'; renderListOnly();
+              state.calMode='day'; renderCalendar();
+            };
+            calendarGrid.appendChild(cell);
+          }
+          return; // month mode done
+        }
+
+        // Day mode: render 24-hour planner for selectedDate
+        renderDayPlanner(state.selectedDate);
+      }
+
+      function renderDayPlanner(dateISO){
+        const tasks = db.load().filter(t=>t.start && t.start.slice(0,10)===dateISO);
+        const byHour = {};
+        tasks.forEach(t=>{
+          const h = new Date(t.start).getHours();
+          (byHour[h]=byHour[h]||[]).push(t);
+        });
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'day-grid';
+
+        for(let h=0; h<24; h++){
+          const label = document.createElement('div');
+          label.className = 'slot-label';
+          const ampm = (h===0?'12a':h<12?`${h}a`:h===12?'12p':`${h-12}p`);
+          label.textContent = ampm;
+
+          const slot = document.createElement('div');
+          slot.className = 'hour-slot';
+          slot.dataset.hour = String(h);
+
+          // Click to create new scheduled item at this hour
+          slot.onclick = (e)=>{
+            if (e.target.closest('.sched-item')) return; // ignore clicks on items
+            const title = prompt(`New item at ${dateISO} ${String(h).padStart(2,'0')}:00`, '');
+            if(!title) return;
+            const dur = parseInt(prompt('Duration (minutes)?', '60')||'60',10);
+            scheduleNew(title, dateISO, h, isNaN(dur)?60:dur);
+            renderDayPlanner(dateISO);
+            renderListOnly();
+          };
+
+          // Drag-over scheduling
+          slot.addEventListener('dragover', e=>{ e.preventDefault(); slot.classList.add('over'); });
+          slot.addEventListener('dragleave', ()=>slot.classList.remove('over'));
+          slot.addEventListener('drop', e=>{
+            e.preventDefault();
+            const id = e.dataTransfer.getData('text/plain');
+            slot.classList.remove('over');
+            const dur = parseInt(prompt('Schedule duration (minutes)?', '60')||'60',10);
+            scheduleExisting(id, dateISO, h, isNaN(dur)?60:dur);
+            renderDayPlanner(dateISO);
+            renderListOnly();
+          });
+
+          // Render scheduled items in this hour
+          (byHour[h]||[]).forEach(t=>{
+            const item = document.createElement('div'); item.className='sched-item'; item.dataset.id=t.id;
+            item.textContent = `${t.title} • ${durationMinutes(t)}m`;
+            item.title = 'Click to edit duration or unschedule';
+
+            item.onclick = ()=>{
+              const choice = prompt('Edit duration (minutes), or type "unschedule" to remove:', String(durationMinutes(t)));
+              if(!choice) return;
+              const tasks = db.load(); const ref = tasks.find(x=>x.id===t.id); if(!ref) return;
+              if(choice.trim().toLowerCase()==='unschedule'){
+                delete ref.start; delete ref.end; db.save(tasks);
+              } else {
+                const mins = parseInt(choice,10); if(isNaN(mins)||mins<=0) return;
+                const start = new Date(ref.start); const end = new Date(start.getTime()+mins*60000);
+                ref.end = end.toISOString(); db.save(tasks);
+              }
+              renderDayPlanner(dateISO);
+              renderListOnly();
+            };
+
+            slot.appendChild(item);
+          });
+
+          wrapper.appendChild(label);
+          wrapper.appendChild(slot);
+        }
+
+        dayPlanner.innerHTML = '';
+        dayPlanner.appendChild(wrapper);
+      }
+
+      // Meta & render
+      function renderMeta(){
+        const meta=db.loadMeta();
+        projectFilter.innerHTML = '<option value="">All Projects</option>'+ meta.projects.map(p=>`<option>${p}</option>`).join('');
+        labelFilter.innerHTML   = '<option value="">All Labels</option>'+ meta.labels.map(l=>`<option>${l}</option>`).join('');
+      }
+      function render(){
+        renderMeta();
+        renderListOnly();
+        renderCalendar();
+        selectedDateLabel.textContent = state.selectedDate;
+      }
+
+      // Public helpers
+      function getActiveTitle(){
+        if (!ACTIVE_TIMER.taskId) return '';
+        const t = db.load().find(x=>x.id===ACTIVE_TIMER.taskId);
+        return t ? t.title : '';
+      }
+
+      // Quick create + start from quadrants
+      function quickAddAndStart(title, opts={}){
+        const p = {
+          title: title || 'Untitled',
+          projects: opts.projects || [],
+          labels: opts.labels || [],
+          priority: opts.priority || 3,
+          due: opts.due || nowISO(),
+          recur: null
+        };
+        const tasks = db.load();
+        const t = {
+          id: uid(),
+          title: p.title,
+          projects: p.projects,
+          labels: p.labels,
+          priority: p.priority,
+          due: p.due,
+          recur: null,
+          createdAt: new Date().toISOString(),
+          completedAt: null,
+          timeLogs: []
+        };
+        tasks.push(t); db.save(tasks);
+
+        const meta = db.loadMeta();
+        p.projects.forEach(x=>{ if(!meta.projects.includes(x)) meta.projects.push(x); });
+        p.labels.forEach(x=>{ if(!meta.labels.includes(x)) meta.labels.push(x); });
+        db.saveMeta(meta);
+
+        ACTIVE_TIMER.start(t.id);
+      }
+
+      // Optional: gentle auto-prompt when a scheduled item starts (checks every 30s)
+      setInterval(()=>{
+        try{
+          if (!ACTIVE_TIMER.taskId) {
+            const now = Date.now();
+            const tasks = db.load().filter(t=>t.start && !t.completedAt);
+            const due = tasks.find(t=>{
+              const dt = new Date(t.start).getTime();
+              return Math.abs(dt - now) < 30*1000;
+            });
+            if (due) {
+              if (Notification && Notification.permission==='granted') {
+                new Notification('Time to start', { body: due.title });
+              }
+              if (confirm(`Start scheduled task now?\n\n${due.title}`)) {
+                ACTIVE_TIMER.start(due.id);
+              }
+            }
+          }
+        }catch(_e){}
+      }, 30000);
+
+      // Bootstrap
+      function bootstrap(){
+        if(!localStorage.getItem(META_KEY)) db.saveMeta({ projects:['Inbox'], labels:['focus'] });
+        const t = new Date(); calYear=t.getFullYear(); calMonth=t.getMonth();
+
+        document.getElementById('prevMonth').onclick = ()=>{ if(calMonth===0){ calMonth=11; calYear--; } else calMonth--; renderCalendar(); };
+        document.getElementById('nextMonth').onclick = ()=>{ if(calMonth===11){ calMonth=0; calYear++; } else calMonth++; renderCalendar(); };
+        document.addEventListener('keydown', (e)=>{ if(e.key==='Enter' && document.activeElement===quickAdd) document.getElementById('addTaskBtn').click(); });
+
+        // Month/Day mode
+        monthMode.onclick = ()=>{ state.calMode='month'; renderCalendar(); };
+        dayMode.onclick   = ()=>{ state.calMode='day';   renderCalendar(); };
+
+        render();
+      }
+
+      return { bootstrap, getActiveTitle, quickAddAndStart };
+    })();
   </script>
 </body>
 </html>
