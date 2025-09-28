@@ -1,14 +1,47 @@
 {
-  "name": "MBPS REI Calculator Suite — PRO",
-  "short_name": "MBPS REI PRO",
-  "start_url": "/mbs-rei-pro/",
-  "scope": "/mbs-rei-pro/",
+  "name": "Focus Intervention",
+  "short_name": "Focus",
+  "description": "Stop doom scrolling and get back to what matters with tasks, day planner, timers, and nudges.",
+  "id": "./?app=focus-intervention",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
-  "description": "Million-dollar wholesaler grade REI calculators — offline-ready PWA.",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "lifestyle", "utilities"],
   "icons": [
-    { "src": "/mbs-rei-pro/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/mbs-rei-pro/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Quick Focus Check",
+      "short_name": "Focus Check",
+      "description": "Immediately check if you're staying focused",
+      "url": "./?action=focus"
+    },
+    {
+      "name": "Start Focus Session",
+      "short_name": "Start Focus",
+      "description": "Begin a new focus session",
+      "url": "./?action=start"
+    },
+    {
+      "name": "Emergency Refocus",
+      "short_name": "Refocus",
+      "description": "Drop everything and refocus",
+      "url": "./?action=emergency"
+    }
   ]
 }
